@@ -1,0 +1,1612 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Limitless Battery Finder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #0057ff;
+      --accent-dark: #0040cc;
+      --accent-light: #eff4ff;
+      --green: #00a550;
+      --green-light: #edfbf4;
+      --red: #e03131;
+      --red-dark: #c92a2a;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-alt: #f8fafc;
+      --shadow: 0 1px 4px rgba(0,0,0,0.07);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font: 'Barlow', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container { width: 100%; max-width: 2200px; }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 14px;
+      padding: 12px 0 10px;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .bolt-icon {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 2px 10px rgba(0,87,255,0.25);
+      flex-shrink: 0;
+    }
+    h1 {
+      font-family: var(--font-head);
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    h1 span { color: var(--accent); }
+
+    /* ── FILTERS ── */
+    .filters {
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .filter-group label {
+      font-family: var(--font-head);
+      font-size: 0.78em;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+    .filter-group select {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: 0.85em;
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color .15s, box-shadow .15s;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 28px;
+    }
+    .filter-group select option { background: var(--surface); color: var(--text); }
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,87,255,0.12);
+    }
+
+    .filter-actions {
+      grid-column: 1 / -1;
+      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    }
+    .btn {
+      padding: 8px 16px; border-radius: 7px; border: none;
+      font-family: var(--font-head);
+      font-size: 0.9em; font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer; transition: background .15s, transform .1s, box-shadow .15s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-red { background: var(--red); color: #fff; }
+    .btn-red:hover { background: var(--red-dark); }
+    .btn-orange { background: var(--accent); color: #fff; }
+    .btn-orange:hover { background: var(--accent-dark); box-shadow: 0 2px 10px rgba(0,87,255,0.25); }
+
+    /* count bar */
+    .count-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+    .count-bar strong { color: var(--text); }
+
+    /* ── TABLE ── */
+    .scroll-hint { display: none; font-size: 0.75em; color: var(--text-light); text-align: center; margin-bottom: 6px; }
+    .top-scroll { width: 100%; overflow-x: auto; overflow-y: hidden; height: 10px; background: var(--surface); border-radius: 10px 10px 0 0; }
+    .top-scroll-inner { height: 1px; }
+    .table-wrap {
+      width: 100%; overflow-x: auto;
+      background: var(--surface);
+      border-radius: 0 0 12px 12px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      border-top: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.83em; }
+    th, td { padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th {
+      background: var(--text);
+      color: #fff;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 0.88em;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      position: sticky; top: 0; z-index: 2;
+      user-select: none;
+      }
+    th:hover { background: var(--surface); }
+    th.sorted { color: #93c5fd; }
+    td { color: var(--text); background: var(--surface); }
+    th:first-child, td:first-child {
+      position: sticky; left: 0; z-index: 1;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 9px 10px;
+      text-align: center;
+    }
+    th:first-child { z-index: 3; background: var(--text); }
+    th:nth-child(2), td:nth-child(2) {
+      position: sticky; left: 41px; z-index: 1;
+      background: var(--surface);
+      border-right: 2px solid var(--border);
+      min-width: 140px;
+    }
+    th:nth-child(2) { z-index: 3; background: var(--text); }
+    tr:hover td { background: var(--accent-light) !important; }
+    tr.selected td { background: #eff4ff !important; }
+    a { color: var(--accent); text-decoration: underline; font-weight: 700; }
+    a:hover { color: var(--accent-dark); }
+    .no-results { text-align: center; padding: 48px; color: var(--text-muted); font-size: 0.95em; }
+
+    input[type="checkbox"] {
+      width: 15px; height: 15px; cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    /* badges */
+    .badge-yes { background: #dcfce7; color: #15803d; padding: 2px 9px; border-radius: 20px; font-size: 0.82em; font-weight: 600; }
+    .badge-no { background: #fee2e2; color: #b91c1c; padding: 2px 9px; border-radius: 20px; font-size: 0.82em; font-weight: 600; }
+    .badge-na { background: var(--bg); color: var(--text-light); padding: 2px 9px; border-radius: 20px; font-size: 0.82em; font-weight: 600; }
+
+    /* extra / hv cols */
+    .extra-col { display: none; }
+    .extra-visible .extra-col { display: table-cell; }
+    .hv-col { display: none; }
+    .hv-visible .hv-col { display: table-cell; }
+
+    /* ── COMPARE PANEL ── */
+    .compare-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .compare-header h2 {
+      font-family: var(--font-head);
+      font-size: 1em; font-weight: 800;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent);
+    }
+    .compare-toggle-btn {
+      font-family: var(--font-head);
+      font-size: 0.82em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+      padding: 5px 14px; border-radius: 6px;
+      background: var(--green); color: #fff; border: none; cursor: pointer;
+    }
+    .compare-toggle-btn:hover { background: #008a43; }
+
+    .compare-body { overflow: auto; flex: 1; padding: 12px 16px; }
+    .compare-table { border-collapse: collapse; min-width: 100%; font-size: 0.82em; }
+    .compare-table th, .compare-table td {
+      padding: 7px 14px; border: 1px solid var(--border);
+      text-align: left; white-space: nowrap;
+    }
+    .compare-table thead th {
+      background: var(--text); color: #fff;
+      font-family: var(--font-head); font-weight: 700; letter-spacing: 0.03em;
+      position: sticky; top: 0;
+      font-size: 1em;
+      cursor: default; text-align: center;
+    }
+    .compare-table thead th:first-child { background: #1e293b; }
+    .compare-table tbody th {
+      background: var(--surface); color: var(--text);
+      font-family: var(--font-head);
+      font-weight: 700; font-size: 1em; letter-spacing: 0.03em;
+      position: sticky; left: 0; z-index: 1;
+      cursor: default; text-align: center;
+    }
+    .compare-table tbody td { background: var(--surface); text-align: center; color: var(--text); }
+    .compare-table tbody tr:nth-child(even) td { background: var(--surface-alt); }
+    .best { color: var(--green); font-weight: 700; }
+    .compare-table tbody td.best { color: var(--accent) !important; font-weight: 800; font-size: 1.1em; }
+    .remove-col {
+      font-size: 0.72em; cursor: pointer; color: var(--text-muted);
+      display: block; text-align: center; margin-top: 3px;
+      font-weight: 600; font-family: var(--font);
+    }
+    .remove-col:hover { text-decoration: underline; color: var(--red); }
+
+    .compare-bar {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.82em; flex-wrap: wrap;
+    }
+    .compare-chip {
+      background: var(--accent-light); color: var(--accent);
+      border-radius: 20px; padding: 3px 10px;
+      font-weight: 600; font-size: 0.85em;
+      cursor: pointer; border: 1px solid #bfdbfe;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .compare-chip .x { color: var(--text-muted); font-weight: 400; }
+    .compare-chip:hover .x { color: var(--red); }
+
+    .btn-extra {
+      padding: 6px 14px; border-radius: 7px;
+      font-family: var(--font-head);
+      font-size: 0.84em; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+      cursor: pointer;
+      background: var(--surface); color: var(--text-muted); border: 1px solid var(--border-strong);
+      transition: all .15s;
+    }
+    .btn-extra:hover { background: var(--bg); color: var(--text); }
+    .btn-extra.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .hv-notice {
+      display: none;
+      background: var(--accent-light); border: 1px solid #bfdbfe;
+      border-radius: 8px; padding: 8px 14px;
+      font-size: 0.82em; color: var(--accent); font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .hv-notice.show { display: block; }
+
+    .mobile-break { display: none; }
+
+    @media (max-width: 1024px) { .filters { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px) {
+      .scroll-hint { display: block; }
+      .filters { grid-template-columns: repeat(2, 1fr); }
+      th, td { font-size: 0.75em; padding: 7px 9px; }
+      .mobile-break { display: block; }
+    }
+    @media (max-width: 480px) { .filters { grid-template-columns: 1fr 1fr; } }
+
+    input[type="number"] { color-scheme: light; }
+    ::placeholder { color: var(--text-light); opacity: 1; }
+
+    .calc-arrow {
+      font-size: 1.8em;
+      font-weight: 900;
+      color: var(--accent);
+    }
+    .calc-arrow-left {
+      animation: nudge-left 1s ease-in-out infinite;
+    }
+    .calc-arrow-right {
+      animation: nudge-right 1s ease-in-out infinite;
+    }
+    @keyframes nudge-left {
+      0%, 100% { transform: translateX(0); opacity: 1; }
+      50%       { transform: translateX(-6px); opacity: 0.5; }
+    }
+    @keyframes nudge-right {
+      0%, 100% { transform: translateX(0); opacity: 1; }
+      50%       { transform: translateX(6px); opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">
+      <div class="bolt-icon">⚡</div>
+      <h1>Limitless <span>Battery</span> Finder</h1>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="filter-actions">
+      <button class="btn btn-red" id="clearFilters">Clear All Filters</button>
+      <span style="font-size:0.9em; color:var(--text); font-weight:800;">
+        Not seeing what you need?<br/> Click <span style="color:var(--red); font-weight:800;">Clear All Filters</span> and start again.
+      </span>
+    </div>
+
+    <div class="filter-group">
+      <label>Battery Application</label>
+      <select id="fApplication"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>Series</label>
+      <select id="fSeries"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>Chemistry</label>
+      <select id="fChemistry"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>Underhood Safe</label>
+      <select id="fUnderhood"><option value="">All</option><option value="Yes">Yes</option><option value="No">No</option></select>
+    </div>
+    <div class="filter-group">
+      <label>High Voltage (16V) Capable</label>
+      <select id="fHighVoltage"><option value="">All</option><option value="Yes">Yes</option><option value="No">No</option></select>
+    </div>
+  </div>
+
+  <!-- HV NOTICE -->
+  <div class="hv-notice" id="hvNotice">
+    ⚡ High Voltage columns are now visible — showing 16V RMS, Burst Wattage, and Burst Amperage specs.
+  </div>
+
+  <!-- COUNT BAR -->
+  <div class="count-bar">
+    <span id="count" style="font-size:0.84em;">Showing all entries</span>
+    <span style="font-size:0.88em; color:var(--red); font-weight:900; font-family:var(--font-head); letter-spacing:0.04em;">▲▲▲ Use the Filters Above to Narrow the Results Below ▲▲▲</span>
+    <div id="extraBtnHome" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn-extra" id="extraToggle">Show More Specs</button>
+      <span id="compareCount" style="display:none; color:var(--text-light); font-weight:600;"></span>
+    </div>
+  </div>
+
+  <!-- COMPARE PANEL -->
+  <div id="comparePanel" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); margin-bottom:10px; overflow:hidden;">
+    <div class="compare-header" style="flex-direction:column; align-items:flex-start;">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%;">
+        <h2>Compare Selected</h2>
+        <button class="compare-toggle-btn" id="toggleCompareView">Compare</button>
+        <button class="btn btn-red" id="clearCompare" style="padding:5px 12px; font-size:0.78em;">Clear Comparison</button>
+      </div>
+      <div class="compare-bar" id="compareChips" style="margin-top:6px;"></div>
+    </div>
+    <div class="compare-body" id="compareBody" style="display:none;"></div>
+    <div id="extraToggleCompare" style="display:none; padding:16px; border-top:1px solid var(--border); justify-content:space-between; align-items:center;"></div>
+  </div>
+
+  <div class="scroll-hint">← Swipe left/right to see all columns →</div>
+  <div style="margin-bottom:4px; font-size:0.88em; font-weight:900; color:var(--red); font-family:var(--font-head); letter-spacing:0.04em;">▼▼▼ Check Boxes Below to Compare Batteries Side-by-Side</div>
+  <div class="top-scroll" id="topScroll"><div class="top-scroll-inner" id="topScrollInner"></div></div>
+
+  <div class="table-wrap" id="tableWrap">
+    <table id="resultsTable">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selectAll" title="Select all visible" /></th>
+          <th data-sort="Battery Name">Battery</th>
+          <th data-sort="Series">Series</th>
+          <th data-sort="Chemistry">Chemistry</th>
+          <th data-sort="Battery Application">Application</th>
+          <th data-sort="Underhood Safe">Underhood Safe</th>
+          <th data-sort="High Voltage (16V) Capable">16V Capable</th>
+          <th data-sort="Capacity (Ah)">Capacity (Ah)</th>
+          <th data-sort="Cranking Amps (CA)">CA</th>
+          <th data-sort="Cold Cranking Amps (CCA)">CCA</th>
+          <th data-sort="RMS Wattage (std. voltage)">RMS Watts (14.4V)</th>
+          <th data-sort="Max Burst Wattage (std.)">Burst Watts (14.4V)</th>
+          <!-- HV columns -->
+          <th data-sort="RMS Wattage @ 16V" class="hv-col">RMS Watts @ 16V</th>
+          <th data-sort="Max Burst Wattage @ 16V" class="hv-col">Burst Watts @ 16V</th>
+          <th data-sort="Burst Amperage @ 16V" class="hv-col">Burst Amps @ 16V</th>
+          <!-- Main always-on -->
+          <th data-sort="RMS Amperage Stand-Alone (30s)">RMS Amps (30s)</th>
+          <th data-sort="Burst Amperage Stand-Alone (10s)">Burst Amps (10s)</th>
+          <th data-sort="BMS Installed">BMS</th>
+          <!-- Extra cols -->
+          <th data-sort="Vehicle Charging System" class="extra-col">Charging System</th>
+          <th data-sort="Resting Voltage" class="extra-col">Resting Voltage</th>
+          <th data-sort="Float Voltage" class="extra-col">Float Voltage</th>
+          <th data-sort="Max Charge Voltage" class="extra-col">Max Charge Voltage</th>
+          <th data-sort="Min Charge Voltage" class="extra-col">Min Charge Voltage</th>
+          <th data-sort="Rec. Charge Current" class="extra-col">Rec. Charge Current</th>
+          <th data-sort="Max Charge Current" class="extra-col">Max Charge Current</th>
+          <th data-sort="Dimensions" class="extra-col">Dimensions</th>
+          <th data-sort="Weight" class="extra-col">Weight</th>
+          <th data-sort="Case Type" class="extra-col">Case Type</th>
+          <th data-sort="Terminal Bolt Size" class="extra-col">Terminal Bolt Size</th>
+          <th data-sort="Terminal Orientation" class="extra-col">Terminal Orientation</th>
+          <th data-sort="Balance Board" class="extra-col">Balance Board</th>
+          <th data-sort="Cycle Life" class="extra-col">Cycle Life</th>
+          <th data-sort="Warranty" class="extra-col">Warranty</th>
+          <th data-sort="MSRP">MSRP</th>
+          <th>Spec Sheet</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  <div class="no-results" id="noResults" style="display:none;">No matching batteries found.</div>
+
+  <!-- WATTAGE CALCULATOR TRIGGER -->
+  <div style="margin-top:14px; margin-bottom:6px; text-align:center; display:flex; align-items:center; justify-content:center; gap:12px;">
+    <span class="calc-arrow calc-arrow-left">&#9658;&#9658;&#9658;</span>
+    <a id="calcToggleLink" href="#" onclick="toggleCalc(event)"
+      style="font-family:var(--font-head); font-size:1.05em; font-weight:800; color:var(--accent); text-decoration:none; letter-spacing:0.03em; display:inline-flex; align-items:center; gap:6px; padding:10px 18px; background:var(--accent-light); border:1px solid #bfdbfe; border-radius:8px;">
+      ⚡ Help Me Find the Right Battery
+    </a>
+    <span class="calc-arrow calc-arrow-right">&#9668;&#9668;&#9668;</span>
+  </div>
+
+  <!-- WATTAGE CALCULATOR -->
+  <div id="wattCalc" style="display:none; background:var(--surface); border-radius:12px; box-shadow:var(--shadow); padding:16px 20px; margin-top:8px; margin-bottom:10px; border-left:4px solid var(--accent);">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+      <div class="bolt-icon" style="width:28px;height:28px;font-size:1rem;">&#x26A1;</div>
+      <h2 style="font-family:var(--font-head); font-size:1.1rem; font-weight:900; text-transform:uppercase; letter-spacing:0.05em; color:var(--text);">Battery Finder Calculator</h2>
+      <span style="font-size:0.8em; color:var(--text-muted);">Answer each step to find out which batteries and how many you need.</span>
+    </div>
+
+    <!-- STEPS: laid out horizontally -->
+    <div style="display:flex; align-items:flex-end; gap:24px; flex-wrap:wrap; margin-bottom:16px;">
+
+      <!-- STEP 1: Application -->
+      <div id="calcStep1" style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Step 1 &mdash; Application</label>
+        <div style="display:flex; border:1px solid var(--border-strong); border-radius:7px; overflow:hidden;">
+          <button id="calcAppCar"
+            style="padding:9px 20px; font-family:var(--font-head); font-size:0.88em; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; border:none; cursor:pointer; background:var(--accent); color:#fff; transition:background .15s;">
+            Car Audio (Alternator)
+          </button>
+          <button id="calcAppPower"
+            style="padding:9px 20px; font-family:var(--font-head); font-size:0.88em; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; border:none; cursor:pointer; background:var(--bg); color:var(--text-muted); transition:background .15s;">
+            Powersport (Stator)
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2 (Car Audio) or STEP 2 (Powersport): Total RMS Wattage -->
+      <div id="calcStep2Watts" style="display:flex; flex-direction:column; gap:6px;">
+        <label id="calcWattsStepLabel" style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Step 2 &mdash; Total RMS Wattage</label>
+        <input type="number" id="calcWatts" min="1" placeholder="System's Total RMS Wattage"
+          style="padding:8px 12px; border:1px solid var(--border-strong); border-radius:7px; font-size:1em; font-family:var(--font); width:260px; color:var(--text); background:var(--surface);" />
+      </div>
+
+      <!-- STEP 4 (Car Audio only): 16V checkbox -->
+      <div id="calcStep3HV" style="display:none; flex-direction:column; gap:6px;">
+        <label style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Step 3 &mdash; Voltage System</label>
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.92em; font-weight:600; color:var(--text); padding:8px 0;">
+          <input type="checkbox" id="calcHVCheck" style="width:16px; height:16px; accent-color:var(--accent); cursor:pointer;" />
+          16-Volt System
+        </label>
+      </div>
+
+      <!-- Calculate Button -->
+      <div id="calcRunWrap" style="display:none; gap:8px; align-items:center;">
+        <button id="calcRunBtn" class="btn btn-orange">Calculate</button>
+        <button id="calcClearBtn" class="btn btn-red" style="display:none;">Clear Results</button>
+      </div>
+
+    </div>
+
+    <!-- Results -->
+    <div id="calcResults" style="display:none;">
+      <div style="border-top:1px solid var(--border); padding-top:14px;">
+        <div style="display:none;">
+          <span id="calcSummaryLabel" style="color:var(--accent);"></span>
+        </div>
+
+        <!-- Alternator Size + Voltage (Car Audio only) -->
+        <div id="calcAltSection" style="display:none; align-items:flex-end; gap:20px; flex-wrap:wrap; margin-bottom:16px; padding:14px 16px; background:var(--surface-alt); border:1px solid var(--border); border-radius:8px;">
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <label style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Alternator Size (Amps)</label>
+            <input type="number" id="calcAltSize" min="1" placeholder="e.g. 200"
+              style="padding:8px 12px; border:1px solid var(--border-strong); border-radius:7px; font-size:1em; font-family:var(--font); width:180px; color:var(--text); background:var(--surface);" />
+          </div>
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <label style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Alternator Voltage</label>
+            <input type="number" id="calcAltVoltInput" min="1" placeholder="e.g. 14.4"
+              style="padding:8px 12px; border:1px solid var(--border-strong); border-radius:7px; font-size:1em; font-family:var(--font); width:180px; color:var(--text); background:var(--surface);" />
+          </div>
+
+          <!-- Alternator Output Result -->
+          <div id="calcAltOutputWrap" style="display:none; flex-direction:column; gap:5px;">
+            <label style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Alternator Output (Watts)</label>
+            <div id="calcAltOutput" style="padding:8px 16px; background:var(--accent-light); border:1px solid #bfdbfe; border-radius:7px; font-family:var(--font-head); font-size:1.1em; font-weight:900; color:var(--accent); white-space:nowrap;"></div>
+          </div>
+        </div>
+
+        <div id="calcBatteryNeededLabel" style="font-family:var(--font-head); font-size:1em; font-weight:800; color:var(--text); margin-bottom:12px;"></div>
+        <div id="calcCards" style="display:flex; flex-wrap:wrap; gap:12px;"></div>
+        <div id="calcNoResult" style="display:none; background:var(--accent-light); border:1px solid #bfdbfe; border-radius:8px; padding:10px 14px; color:var(--accent); font-size:0.88em; font-weight:600; margin-top:8px;">
+          No battery or combination can cover the remaining wattage. Please contact Limitless Lithium for a custom solution.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="big3Modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:20px;" onclick="closeBig3Modal()">
+    <div style="background:#fff; border-radius:12px; padding:16px; max-width:90vw; max-height:90vh; position:relative; overflow:auto;" onclick="event.stopPropagation()">
+      <button onclick="closeBig3Modal()" style="position:absolute; top:10px; right:12px; background:var(--red); color:#fff; border:none; border-radius:6px; font-family:var(--font-head); font-weight:700; font-size:0.85em; padding:4px 12px; cursor:pointer;">✕ Close</button>
+      <div style="font-family:var(--font-head); font-size:1em; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--text); margin-bottom:12px; margin-right:60px;">Big 3 Upgrade — Example</div>
+      <img id="big3Image" src="" alt="Big 3 Upgrade Example" style="max-width:100%; height:auto; border-radius:8px; display:block;" />
+    </div>
+  </div>
+
+  <div style="text-align:center; padding:16px 0 8px; font-size:0.78em; color:var(--text-muted);">
+    &copy; 2026 Limitless Battery Finder. All rights reserved.
+  </div>
+
+</div>
+
+<script>
+const rawData = [
+  {
+    "Battery Name": "Nano OEM Elite",
+    "Full Part Number": "NANO-OEM-27AH",
+    "Series": "Nano",
+    "Chemistry": "LiFePO4",
+    "Battery Application": "Powersports",
+    "Underhood Safe": "No",
+    "Vehicle Charging System": "Stator",
+    "Capacity (Ah)": "27",
+    "Cranking Amps (CA)": "1380",
+    "Cold Cranking Amps (CCA)": "1035",
+    "RMS Wattage (std. voltage)": "2,000W",
+    "Max Burst Wattage (std.)": "2,500W",
+    "High Voltage (16V) Capable": "No",
+    "RMS Wattage @ 16V": "N/A",
+    "Max Burst Wattage @ 16V": "N/A",
+    "Burst Amperage @ 16V": "N/A",
+    "RMS Amperage Stand-Alone (30s)": "140A @ 14.8V",
+    "Burst Amperage Stand-Alone (10s)": "200A @ 14.8V",
+    "Resting Voltage": "13.1–13.4V",
+    "Float Voltage": "14.2V",
+    "Max Charge Voltage": "14.8V",
+    "Min Charge Voltage": "13.6V",
+    "Rec. Charge Current": "75A",
+    "Max Charge Current": "100A (BMS limit)",
+    "Dimensions": "4.90\"×6.46\"×6.89\"",
+    "Weight": "8.49 lbs",
+    "Case Type": "BTX30",
+    "Terminal Bolt Size": "M6-1.0",
+    "Terminal Orientation": "Left Positive",
+    "BMS Installed": "Yes",
+    "Balance Board": "Yes",
+    "Cycle Life": "2,000 @ 80% DOD",
+    "Warranty": "1-year (3-years with Registration)",
+    "Product URL": "https://limitlesslithium.com/products/limitless-lithium-nano-oem-elite.html",
+    "Spec Sheet URL": "https://drive.google.com/file/d/1DmJT0rwa68MZLOLKE1HNp-ywf_J3Ap_D/view?usp=drive_link",
+    "MSRP": "499"
+  },
+  {
+    "Battery Name": "Nano-HD SLv2",
+    "Full Part Number": "NSL-12AH",
+    "Series": "Nano",
+    "Chemistry": "LiFePO4",
+    "Battery Application": "Powersports",
+    "Underhood Safe": "No",
+    "Vehicle Charging System": "Stator",
+    "Capacity (Ah)": "12",
+    "Cranking Amps (CA)": "1000",
+    "Cold Cranking Amps (CCA)": "750",
+    "RMS Wattage (std. voltage)": "2,500–3,000W",
+    "Max Burst Wattage (std.)": "3,500W",
+    "High Voltage (16V) Capable": "No",
+    "RMS Wattage @ 16V": "N/A",
+    "Max Burst Wattage @ 16V": "N/A",
+    "Burst Amperage @ 16V": "N/A",
+    "RMS Amperage Stand-Alone (30s)": "200A @ 14.8V",
+    "Burst Amperage Stand-Alone (10s)": "250A @ 14.8V",
+    "Resting Voltage": "13.1–13.4V",
+    "Float Voltage": "14.2V",
+    "Max Charge Voltage": "14.8V",
+    "Min Charge Voltage": "13.6V",
+    "Rec. Charge Current": "75A",
+    "Max Charge Current": "100A (BMS limit)",
+    "Dimensions": "7\"×3\"×6.5\"",
+    "Weight": "4.11 lbs",
+    "Case Type": "Group 20",
+    "Terminal Bolt Size": "M6-100",
+    "Terminal Orientation": "Left Positive",
+    "BMS Installed": "Yes",
+    "Balance Board": "Yes",
+    "Cycle Life": "2,000 @ 80% DOD",
+    "Warranty": "1-year (3-years with Registration)",
+    "Product URL": "https://limitlesslithium.com/products/nano-hd-slv2-12ah-motorcycle-power-sports-battery-bci-20-case.html",
+    "Spec Sheet URL": "https://drive.google.com/file/d/1FVN7gR8kPN2uMG1McC4tscO8S4A8P2Bi/view?usp=drive_link",
+    "MSRP": "599"
+  },
+  {
+    "Battery Name": "Nano-HDv3",
+    "Full Part Number": "NANO-HDv3",
+    "Series": "Nano",
+    "Chemistry": "LiFePO4",
+    "Battery Application": "Powersports",
+    "Underhood Safe": "No",
+    "Vehicle Charging System": "Stator",
+    "Capacity (Ah)": "30",
+    "Cranking Amps (CA)": "1800",
+    "Cold Cranking Amps (CCA)": "1350",
+    "RMS Wattage (std. voltage)": "6,000–6,500W",
+    "Max Burst Wattage (std.)": "8,000W",
+    "High Voltage (16V) Capable": "No",
+    "RMS Wattage @ 16V": "N/A",
+    "Max Burst Wattage @ 16V": "N/A",
+    "Burst Amperage @ 16V": "N/A",
+    "RMS Amperage Stand-Alone (30s)": "400A @ 14.8V",
+    "Burst Amperage Stand-Alone (10s)": "800A @ 14.8V",
+    "Resting Voltage": "13.1–13.4V",
+    "Float Voltage": "14.2V",
+    "Max Charge Voltage": "14.8V",
+    "Min Charge Voltage": "13.6V",
+    "Rec. Charge Current": "75A",
+    "Max Charge Current": "100A (BMS limit)",
+    "Dimensions": "6.49\"×6.46\"×5.04\"",
+    "Weight": "10.36 lbs",
+    "Case Type": "Group 30",
+    "Terminal Bolt Size": "M6-100",
+    "Terminal Orientation": "Left Positive",
+    "BMS Installed": "Yes",
+    "Balance Board": "Yes",
+    "Cycle Life": "2,000 @ 80% DOD",
+    "Warranty": "1-year (3-years with Registration)",
+    "Product URL": "https://limitlesslithium.com/products/nanohdv3.html",
+    "Spec Sheet URL": "https://drive.google.com/file/d/1chdpgBzaW0JTXbBj5JHLG92sQpAHkzSN/view?usp=drive_link",
+    "MSRP": "799"
+  },
+  {
+    "Battery Name": "No-Li 12Ah",
+    "Full Part Number": "NoLi-12AH",
+    "Series": "No-Li",
+    "Chemistry": "Sodium-ion",
+    "Battery Application": "Car Audio",
+    "Underhood Safe": "No",
+    "Vehicle Charging System": "Alternator",
+    "Capacity (Ah)": "12",
+    "Cranking Amps (CA)": "880",
+    "Cold Cranking Amps (CCA)": "660",
+    "RMS Wattage (std. voltage)": "2,000–2,500W",
+    "Max Burst Wattage (std.)": "3,500W",
+    "High Voltage (16V) Capable": "Yes",
+    "RMS Wattage @ 16V": "2,500–3,000W",
+    "Max Burst Wattage @ 16V": "4,000W",
+    "Burst Amperage @ 16V": "200A",
+    "RMS Amperage Stand-Alone (30s)": "75A @ 14.6V",
+    "Burst Amperage Stand-Alone (10s)": "150A @ 14.6V",
+    "Resting Voltage": "12–16V",
+    "Float Voltage": "14.2V",
+    "Max Charge Voltage": "16V",
+    "Min Charge Voltage": "10V",
+    "Rec. Charge Current": "200A",
+    "Max Charge Current": "300A",
+    "Dimensions": "7\"×3\"×6.69\"",
+    "Weight": "4.10 lbs",
+    "Case Type": "BTX20",
+    "Terminal Bolt Size": "M5-0.8",
+    "Terminal Orientation": "Right Positive",
+    "BMS Installed": "No",
+    "Balance Board": "Yes",
+    "Cycle Life": "4,000 @ 80% DOD",
+    "Warranty": "1-year (3-years with Registration)",
+    "Product URL": "https://limitlesslithium.com/products/noli-sodium-12ah-limitless-lithium-battery.html",
+    "Spec Sheet URL": "https://drive.google.com/file/d/1LjhajrJeI-f-fbZy2G5I-6_0vXOZUmTc/view?usp=drive_link",
+    "MSRP": "399"
+  },
+  {
+    "Battery Name": "No-Li 30Ah",
+    "Full Part Number": "NoLi-30AH",
+    "Series": "No-Li",
+    "Chemistry": "Sodium-ion",
+    "Battery Application": "Car Audio",
+    "Underhood Safe": "No",
+    "Vehicle Charging System": "Alternator",
+    "Capacity (Ah)": "30",
+    "Cranking Amps (CA)": "1500",
+    "Cold Cranking Amps (CCA)": "1125",
+    "RMS Wattage (std. voltage)": "4,000–5,500W",
+    "Max Burst Wattage (std.)": "6,000W",
+    "High Voltage (16V) Capable": "Yes",
+    "RMS Wattage @ 16V": "6,000–8,000W",
+    "Max Burst Wattage @ 16V": "10,000W",
+    "Burst Amperage @ 16V": "600A",
+    "RMS Amperage Stand-Alone (30s)": "300A @ 14.6V",
+    "Burst Amperage Stand-Alone (10s)": "360A @ 14.6V",
+    "Resting Voltage": "12–16V",
+    "Float Voltage": "14.2V",
+    "Max Charge Voltage": "16V",
+    "Min Charge Voltage": "10V",
+    "Rec. Charge Current": "300A",
+    "Max Charge Current": "300A",
+    "Dimensions": "6.88\"×6.5\"×5\"",
+    "Weight": "9.15 lbs",
+    "Case Type": "BTX30",
+    "Terminal Bolt Size": "M6-1.0",
+    "Terminal Orientation": "Right Positive",
+    "BMS Installed": "No",
+    "Balance Board": "Yes",
+    "Cycle Life": "4,000 @ 80% DOD",
+    "Warranty": "1-year (3-years with Registration)",
+    "Product URL": "https://limitlesslithium.com/products/noli-sodium-30ah-limitless-lithium-battery.html",
+    "Spec Sheet URL": "https://drive.google.com/file/d/1bMf915C3HLSKccuULi-9A451K7wxgigT/view?usp=drive_link",
+    "MSRP": "699"
+  },
+  {
+    "Battery Name": "No-Li 50Ah",
+    "Full Part Number": "NoLi-50AH",
+    "Series": "No-Li",
+    "Chemistry": "Sodium-ion",
+    "Battery Application": "Car Audio",
+    "Underhood Safe": "No",
+    "Vehicle Charging System": "Alternator",
+    "Capacity (Ah)": "50",
+    "Cranking Amps (CA)": "3000",
+    "Cold Cranking Amps (CCA)": "2250",
+    "RMS Wattage (std. voltage)": "6,500–8,000W",
+    "Max Burst Wattage (std.)": "8,500W",
+    "High Voltage (16V) Capable": "Yes",
+    "RMS Wattage @ 16V": "10,000–13,000W",
+    "Max Burst Wattage @ 16V": "15,000W",
+    "Burst Amperage @ 16V": "1,000A",
+    "RMS Amperage Stand-Alone (30s)": "500A @ 14.6V",
+    "Burst Amperage Stand-Alone (10s)": "600A @ 14.6V",
+    "Resting Voltage": "12–16V",
+    "Float Voltage": "14.2V",
+    "Max Charge Voltage": "16V",
+    "Min Charge Voltage": "10V",
+    "Rec. Charge Current": "300A",
+    "Max Charge Current": "450A",
+    "Dimensions": "6.69\"×7.75\"×6.50\"",
+    "Weight": "15.85 lbs",
+    "Case Type": "G26R",
+    "Terminal Bolt Size": "M6-1.0",
+    "Terminal Orientation": "Right Positive",
+    "BMS Installed": "No",
+    "Balance Board": "Yes",
+    "Cycle Life": "4,000 @ 80% DOD",
+    "Warranty": "1-year (3-years with Registration)",
+    "Product URL": "https://limitlesslithium.com/products/noli-sodium-50ah-limitless-lithium-battery.html",
+    "Spec Sheet URL": "https://drive.google.com/file/d/1quQAbVDlZyGpaZm1kDZsK8ApIxs77Vjf/view?usp=drive_link",
+    "MSRP": "1199"
+  },
+  {
+    "Battery Name": "Retro Pro 56",
+    "Full Part Number": "RP24-56AH",
+    "Series": "Retro Pro",
+    "Chemistry": "LiFePO4",
+    "Battery Application": "Car Audio",
+    "Underhood Safe": "Yes",
+    "Vehicle Charging System": "Alternator",
+    "Capacity (Ah)": "56",
+    "Cranking Amps (CA)": "2900",
+    "Cold Cranking Amps (CCA)": "2100",
+    "RMS Wattage (std. voltage)": "10,000–13,000W",
+    "Max Burst Wattage (std.)": "16,000W",
+    "High Voltage (16V) Capable": "No",
+    "RMS Wattage @ 16V": "N/A",
+    "Max Burst Wattage @ 16V": "N/A",
+    "Burst Amperage @ 16V": "N/A",
+    "RMS Amperage Stand-Alone (30s)": "750A @ 14.8V",
+    "Burst Amperage Stand-Alone (10s)": "950A @ 14.8V",
+    "Resting Voltage": "13.1–13.4V",
+    "Float Voltage": "14.2V",
+    "Max Charge Voltage": "14.8V",
+    "Min Charge Voltage": "13.6V",
+    "Rec. Charge Current": "250A",
+    "Max Charge Current": "450A",
+    "Dimensions": "6.5\"×10.125\"×8.75\"",
+    "Weight": "28 lbs",
+    "Case Type": "Group 24",
+    "Terminal Bolt Size": "M8-125",
+    "Terminal Orientation": "Left Positive",
+    "BMS Installed": "No",
+    "Balance Board": "Yes",
+    "Cycle Life": "2,000 @ 80% DOD",
+    "Warranty": "1-year (3-years with Registration)",
+    "Product URL": "https://limitlesslithium.com/products/retro-pro-56-limitless-lithium.html",
+    "Spec Sheet URL": "https://drive.google.com/file/d/1eYOCSD4MpL5q_OgdTdrZL7aXo--kpsyv/view?usp=drive_link",
+    "MSRP": "1339"
+  }
+];
+
+// ── STATE ──────────────────────────────────────────────
+let allData = rawData;
+let filteredData = [];
+let sortKey = null, sortAsc = true;
+let selectedParts = new Set();
+let compareExpanded = false;
+let hvVisible = false;
+
+// ── POPULATE DROPDOWNS ─────────────────────────────────
+function populateDropdowns() {
+  const appEl = document.getElementById('fApplication');
+  const chemEl = document.getElementById('fChemistry');
+  const seriesEl = document.getElementById('fSeries');
+
+  [['Powersports','Powersport (Stator)'],['Car Audio','Car Audio (Alternator)']].forEach(([val,label]) => {
+    const o = document.createElement('option'); o.value = val; o.textContent = label; appEl.appendChild(o);
+  });
+  [...new Set(allData.map(r => r['Chemistry']))].forEach(v => {
+    const o = document.createElement('option'); o.value = v; o.textContent = v; chemEl.appendChild(o);
+  });
+  [...new Set(allData.map(r => r['Series']))].forEach(v => {
+    const o = document.createElement('option'); o.value = v; o.textContent = v; seriesEl.appendChild(o);
+  });
+}
+populateDropdowns();
+
+// ── FILTER & RENDER ────────────────────────────────────
+function applyFilters() {
+  const fApp = document.getElementById('fApplication').value;
+  const fHV  = document.getElementById('fHighVoltage').value;
+  const fUH  = document.getElementById('fUnderhood').value;
+  const fChem = document.getElementById('fChemistry').value;
+  const fSer  = document.getElementById('fSeries').value;
+
+  filteredData = allData.filter(r => {
+    if (fApp  && r['Battery Application'] !== fApp)  return false;
+    if (fHV   && r['High Voltage (16V) Capable'] !== fHV) return false;
+    if (fUH   && r['Underhood Safe'] !== fUH) return false;
+    if (fChem && r['Chemistry'] !== fChem) return false;
+    if (fSer  && r['Series'] !== fSer) return false;
+    return true;
+  });
+
+  // Show/hide HV columns only when filter is explicitly set to Yes
+  const hvForced = fHV === 'Yes';
+  setHVColumns(hvForced);
+
+  if (sortKey) {
+    filteredData = [...filteredData].sort((a, b) => {
+      let va = a[sortKey] || '', vb = b[sortKey] || '';
+      const na = parseFloat(String(va).replace(/[^0-9.]/g,'')),
+            nb = parseFloat(String(vb).replace(/[^0-9.]/g,''));
+      if (!isNaN(na) && !isNaN(nb) && na !== nb) return sortAsc ? na-nb : nb-na;
+      if (va === 'Yes' && vb === 'No') return sortAsc ? -1 : 1;
+      if (va === 'No' && vb === 'Yes') return sortAsc ? 1 : -1;
+      return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+    });
+  }
+
+  renderTable();
+}
+
+function setHVColumns(show) {
+  hvVisible = show;
+  const table = document.getElementById('resultsTable');
+  table.classList.toggle('hv-visible', show);
+  document.getElementById('hvNotice').classList.toggle('show', show);
+}
+
+function badgeHTML(val) {
+  const v = (val||'').trim();
+  if (v === 'Yes') return `<span class="badge-yes">Yes</span>`;
+  if (v === 'No')  return `<span class="badge-no">No</span>`;
+  if (v === 'N/A' || v === '') return `<span class="badge-na">N/A</span>`;
+  return v;
+}
+
+const BADGE_COLS = new Set(['Underhood Safe','High Voltage (16V) Capable','BMS Installed','Balance Board']);
+
+const TABLE_COLS = [
+  'Series','Chemistry','Battery Application','Underhood Safe',
+  'High Voltage (16V) Capable','Capacity (Ah)','Cranking Amps (CA)',
+  'Cold Cranking Amps (CCA)','RMS Wattage (std. voltage)','Max Burst Wattage (std.)',
+  'RMS Wattage @ 16V','Max Burst Wattage @ 16V','Burst Amperage @ 16V',
+  'RMS Amperage Stand-Alone (30s)','Burst Amperage Stand-Alone (10s)','BMS Installed',
+  'Vehicle Charging System','Resting Voltage','Float Voltage','Max Charge Voltage',
+  'Min Charge Voltage','Rec. Charge Current','Max Charge Current',
+  'Dimensions','Weight','Case Type','Terminal Bolt Size','Terminal Orientation',
+  'Balance Board','Cycle Life','Warranty','MSRP'
+];
+
+const EXTRA_COLS = new Set([
+  'Vehicle Charging System','Resting Voltage','Float Voltage','Max Charge Voltage',
+  'Min Charge Voltage','Rec. Charge Current','Max Charge Current',
+  'Dimensions','Weight','Case Type','Terminal Bolt Size','Terminal Orientation',
+  'Balance Board','Cycle Life','Warranty'
+]);
+
+const HV_COLS = new Set(['RMS Wattage @ 16V','Max Burst Wattage @ 16V','Burst Amperage @ 16V']);
+
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  const noRes = document.getElementById('noResults');
+  const countEl = document.getElementById('count');
+
+  tbody.innerHTML = '';
+  if (filteredData.length === 0) {
+    noRes.style.display = 'block';
+    countEl.innerHTML = '<strong>0</strong> batteries found';
+    return;
+  }
+  noRes.style.display = 'none';
+  countEl.innerHTML = `Showing <strong>${filteredData.length}</strong> of <strong>${allData.length}</strong> batteries`;
+
+  filteredData.forEach(row => {
+    const tr = document.createElement('tr');
+    const part = row['Full Part Number'];
+    if (selectedParts.has(part)) tr.classList.add('selected');
+
+    // checkbox
+    const tdCb = document.createElement('td');
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = selectedParts.has(part);
+    cb.addEventListener('change', () => toggleCompare(part, cb.checked, tr));
+    tdCb.appendChild(cb); tr.appendChild(tdCb);
+
+    // Battery Name
+    const tdName = document.createElement('td');
+    const url = row['Product URL'];
+    if (url) {
+      const a = document.createElement('a'); a.href = url; a.target = '_blank';
+      a.textContent = row['Battery Name'];
+      a.style.position = 'relative'; a.style.zIndex = '4';
+      tdName.appendChild(a);
+    } else tdName.textContent = row['Battery Name'];
+    tr.appendChild(tdName);
+
+    TABLE_COLS.forEach(k => {
+      const td = document.createElement('td');
+      if (EXTRA_COLS.has(k)) td.className = 'extra-col';
+      if (HV_COLS.has(k)) td.className = 'hv-col';
+      const val = row[k] || '—';
+      if (BADGE_COLS.has(k)) td.innerHTML = badgeHTML(val);
+      else if (k === 'Battery Application') td.textContent = val === 'Powersports' ? 'Powersport (Stator)' : val === 'Car Audio' ? 'Car Audio (Alternator)' : val;
+      else if (k === 'Warranty' && val.includes('Registration')) td.innerHTML = val.replace('Registration', '<a href="https://limitlesslithium.com/battery-registration/" target="_blank">Registration</a>');
+      else if (k === 'MSRP' && val !== '—') td.textContent = '$' + parseFloat(val).toLocaleString('en-US', {minimumFractionDigits:0});
+      else td.textContent = val;
+      tr.appendChild(td);
+    });
+
+    // Spec Sheet
+    const tdSpec = document.createElement('td');
+    const su = row['Spec Sheet URL'];
+    if (su) {
+      const a = document.createElement('a'); a.href = su; a.target = '_blank'; a.textContent = 'PDF';
+      tdSpec.appendChild(a);
+    } else tdSpec.textContent = '—';
+    tr.appendChild(tdSpec);
+
+    tbody.appendChild(tr);
+  });
+
+  syncScrollWidth();
+  updateSelectAll();
+}
+
+// ── SELECT ALL ─────────────────────────────────────────
+document.getElementById('selectAll').addEventListener('change', function() {
+  filteredData.forEach(r => {
+    if (this.checked) selectedParts.add(r['Full Part Number']);
+    else selectedParts.delete(r['Full Part Number']);
+  });
+  renderTable(); updateComparePanel();
+});
+
+function updateSelectAll() {
+  const sa = document.getElementById('selectAll');
+  const visible = filteredData.map(r => r['Full Part Number']);
+  const allChecked = visible.length > 0 && visible.every(p => selectedParts.has(p));
+  sa.checked = allChecked;
+  sa.indeterminate = !allChecked && visible.some(p => selectedParts.has(p));
+}
+
+// ── COMPARE ────────────────────────────────────────────
+function toggleCompare(part, on, tr) {
+  if (on) selectedParts.add(part); else selectedParts.delete(part);
+  if (tr) tr.classList.toggle('selected', on);
+  updateSelectAll(); updateComparePanel();
+}
+
+const COMPARE_FIELDS = [
+  ['Part Number','Full Part Number'],
+  ['Series','Series'],
+  ['Chemistry','Chemistry'],
+  ['Application','Battery Application'],
+  ['Capacity (Ah)','Capacity (Ah)'],
+  ['RMS Wattage (14.4V)','RMS Wattage (std. voltage)'],
+  ['Max Burst Wattage (14.4V)','Max Burst Wattage (std.)'],
+  ['Cranking Amps (CA)','Cranking Amps (CA)'],
+  ['Cold Cranking Amps (CCA)','Cold Cranking Amps (CCA)'],
+  ['RMS Amperage Stand-Alone (30s)','RMS Amperage Stand-Alone (30s)'],
+  ['Burst Amperage Stand-Alone (10s)','Burst Amperage Stand-Alone (10s)'],
+  ['RMS Wattage @ 16V','RMS Wattage @ 16V'],
+  ['Max Burst Wattage @ 16V','Max Burst Wattage @ 16V'],
+  ['Burst Amperage @ 16V','Burst Amperage @ 16V'],
+  ['Underhood Safe','Underhood Safe'],
+  ['High Voltage (16V) Capable','High Voltage (16V) Capable'],
+  ['BMS Installed','BMS Installed'],
+  ['Balance Board','Balance Board'],
+  ['Vehicle Charging System','Vehicle Charging System'],
+  ['Resting Voltage','Resting Voltage'],
+  ['Float Voltage','Float Voltage'],
+  ['Max Charge Voltage','Max Charge Voltage'],
+  ['Min Charge Voltage','Min Charge Voltage'],
+  ['Recommended Charge Current','Rec. Charge Current'],
+  ['Max Charge Current','Max Charge Current'],
+  ['Dimensions','Dimensions'],
+  ['Weight','Weight'],
+  ['Case Type','Case Type'],
+  ['Terminal Bolt Size','Terminal Bolt Size'],
+  ['Terminal Orientation','Terminal Orientation'],
+  ['Cycle Life','Cycle Life'],
+  ['Warranty','Warranty'],
+  ['MSRP','MSRP']
+];
+
+const WINNER_RULES = {
+  'Capacity (Ah)': 'biggest_number',
+  'Cranking Amps (CA)': 'biggest_number',
+  'Cold Cranking Amps (CCA)': 'biggest_number',
+  'RMS Wattage (std. voltage)': 'biggest_number',
+  'Max Burst Wattage (std.)': 'biggest_number',
+  'RMS Wattage @ 16V': 'biggest_number',
+  'Max Burst Wattage @ 16V': 'biggest_number',
+  'Burst Amperage @ 16V': 'biggest_number',
+  'RMS Amperage Stand-Alone (30s)': 'biggest_number',
+  'Burst Amperage Stand-Alone (10s)': 'biggest_number',
+  'High Voltage (16V) Capable': 'yes_over_no',
+  'Underhood Safe': 'yes_over_no',
+  'BMS Installed': 'yes_over_no',
+  'Balance Board': 'yes_over_no',
+  'Cycle Life': 'biggest_number',
+  'MSRP': 'lowest_price'
+};
+
+function getWinnerIndices(key, vals) {
+  const rule = WINNER_RULES[key];
+  if (!rule) return new Set();
+  if (vals.every(v => v === vals[0])) return new Set();
+  if (rule === 'yes_over_no') {
+    const winners = new Set();
+    vals.forEach((v,i) => { if (v === 'Yes') winners.add(i); });
+    return winners.size === vals.length ? new Set() : winners;
+  }
+  if (rule === 'biggest_number') {
+    const nums = vals.map(v => { const m = String(v).match(/[\d,]+/); return m ? parseFloat(m[0].replace(/,/g,'')) : -1; });
+    const maxN = Math.max(...nums);
+    if (maxN < 0 || nums.filter(n=>n===maxN).length===vals.length) return new Set();
+    const w = new Set(); nums.forEach((n,i)=>{ if(n===maxN) w.add(i); }); return w;
+  }
+  if (rule === 'lowest_price') {
+    const nums = vals.map(v => { const m = String(v).match(/[\d.]+/); return m ? parseFloat(m[0]) : Infinity; });
+    const minN = Math.min(...nums);
+    if (minN===Infinity || nums.filter(n=>n===minN).length===vals.length) return new Set();
+    const w = new Set(); nums.forEach((n,i)=>{ if(n===minN) w.add(i); }); return w;
+  }
+  return new Set();
+}
+
+function updateComparePanel() {
+  const panel = document.getElementById('comparePanel');
+  const chipsEl = document.getElementById('compareChips');
+  const countEl2 = document.getElementById('compareCount');
+  const n = selectedParts.size;
+  if (n === 0) { panel.style.display='none'; countEl2.style.display='none'; if(compareExpanded){compareExpanded=false;toggleCompareBody(false);} return; }
+  panel.style.display = 'block'; countEl2.style.display='inline'; countEl2.textContent=`${n} selected`;
+  chipsEl.innerHTML = '';
+  [...selectedParts].forEach(part => {
+    const row = allData.find(r=>r['Full Part Number']===part);
+    const chip = document.createElement('span'); chip.className='compare-chip';
+    chip.innerHTML = `${row ? row['Battery Name'] : part} <span class="x">✕</span>`;
+    chip.addEventListener('click',()=>{ selectedParts.delete(part); renderTable(); updateComparePanel(); });
+    chipsEl.appendChild(chip);
+  });
+  if (compareExpanded) renderCompareTable();
+}
+
+function renderCompareTable() {
+  const body = document.getElementById('compareBody');
+  const rows = [...selectedParts].map(p => allData.find(r=>r['Full Part Number']===p)).filter(Boolean);
+  if (!rows.length) { body.innerHTML=''; return; }
+  let html = '<table class="compare-table"><thead><tr><th>Feature</th>';
+  rows.forEach(r => {
+    const url = r['Product URL'];
+    const label = url ? `<a href="${url}" target="_blank" style="color:#fff;">${r['Battery Name']}</a>` : r['Battery Name'];
+    html += `<th>${label}<span class="remove-col" data-part="${r['Full Part Number']}">Remove</span></th>`;
+  });
+  html += '</tr></thead><tbody>';
+  COMPARE_FIELDS.forEach(([label, key]) => {
+    // Insert Spec Sheet row just before MSRP
+    if (key === 'MSRP') {
+      html += '<tr><th>Spec Sheet</th>';
+      rows.forEach(r => {
+        const su = r['Spec Sheet URL'];
+        html += `<td>${su?`<a href="${su}" target="_blank">PDF</a>`:'—'}</td>`;
+      });
+      html += '</tr>';
+    }
+    html += `<tr><th>${label}</th>`;
+    const vals = rows.map(r=>r[key]||'');
+    const winners = getWinnerIndices(key, vals);
+    vals.forEach((v,i) => {
+      let disp = v || '—';
+      if (key==='MSRP' && v) disp = '$' + parseFloat(v).toLocaleString('en-US');
+      if (key==='Warranty' && disp.includes('Registration')) disp = disp.replace('Registration', '<a href="https://limitlesslithium.com/battery-registration/" target="_blank">Registration</a>');
+      html += `<td${winners.has(i)?' class="best"':''}>${disp}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  body.innerHTML = html;
+  body.querySelectorAll('.remove-col').forEach(btn => {
+    btn.addEventListener('click',()=>{ selectedParts.delete(btn.dataset.part); renderTable(); updateComparePanel(); });
+  });
+}
+
+function toggleCompareBody(force) {
+  compareExpanded = typeof force==='boolean' ? force : !compareExpanded;
+  const body = document.getElementById('compareBody');
+  const btn  = document.getElementById('toggleCompareView');
+  const extraCompare = document.getElementById('extraToggleCompare');
+  const extraBtn = document.getElementById('extraToggle');
+  const compareCountEl = document.getElementById('compareCount');
+  const countBarHome = document.getElementById('extraBtnHome');
+  if (compareExpanded) {
+    body.style.display='block'; btn.textContent='Hide Comparison';
+    extraCompare.style.display='flex';
+    extraCompare.appendChild(compareCountEl); extraCompare.appendChild(extraBtn);
+    renderCompareTable();
+  } else {
+    body.style.display='none'; btn.textContent='Compare';
+    extraCompare.style.display='none';
+    countBarHome.insertBefore(extraBtn, countBarHome.firstChild);
+    countBarHome.appendChild(compareCountEl);
+  }
+}
+
+document.getElementById('toggleCompareView').addEventListener('click',()=>toggleCompareBody());
+document.getElementById('clearCompare').addEventListener('click',()=>{
+  selectedParts.clear(); compareExpanded=false; toggleCompareBody(false); renderTable(); updateComparePanel();
+});
+
+// ── SORT ───────────────────────────────────────────────
+document.querySelectorAll('th[data-sort]').forEach(th => {
+  th.addEventListener('click',()=>{
+    const k = th.dataset.sort;
+    if (sortKey===k) sortAsc=!sortAsc; else { sortKey=k; sortAsc=true; }
+    document.querySelectorAll('th[data-sort]').forEach(t => {
+      const base = t.dataset.label || t.textContent.replace(/ [▲▼]$/,'');
+      t.dataset.label = base;
+      if (t.dataset.sort===sortKey) { t.textContent=base+(sortAsc?' ▲':' ▼'); t.classList.add('sorted'); }
+      else { t.textContent=base; t.classList.remove('sorted'); }
+    });
+    applyFilters();
+  });
+});
+
+// ── CLEAR ──────────────────────────────────────────────
+document.getElementById('clearFilters').addEventListener('click',()=>{
+  ['fApplication','fHighVoltage','fUnderhood','fChemistry','fSeries'].forEach(id=>document.getElementById(id).value='');
+  applyFilters();
+});
+
+// ── FILTER LISTENERS ───────────────────────────────────
+['fApplication','fHighVoltage','fUnderhood','fChemistry','fSeries'].forEach(id=>
+  document.getElementById(id).addEventListener('change',applyFilters)
+);
+
+// ── EXTRA FEATURES TOGGLE ──────────────────────────────
+document.getElementById('extraToggle').addEventListener('click',()=>{
+  const table = document.getElementById('resultsTable');
+  const showing = table.classList.toggle('extra-visible');
+  document.getElementById('extraToggle').textContent = showing ? 'Show Key Specs Only' : 'Show More Specs';
+  document.getElementById('extraToggle').classList.toggle('active', showing);
+  syncScrollWidth();
+});
+
+// ── SCROLL SYNC ────────────────────────────────────────
+const topScroll = document.getElementById('topScroll');
+const topScrollInner = document.getElementById('topScrollInner');
+const tableWrap = document.getElementById('tableWrap');
+function syncScrollWidth() {
+  const t = document.getElementById('resultsTable');
+  if (t) topScrollInner.style.width = t.scrollWidth + 'px';
+}
+topScroll.addEventListener('scroll',()=>tableWrap.scrollLeft=topScroll.scrollLeft);
+tableWrap.addEventListener('scroll',()=>topScroll.scrollLeft=tableWrap.scrollLeft);
+window.addEventListener('resize',syncScrollWidth);
+
+// ── INIT ───────────────────────────────────────────────
+applyFilters();
+setTimeout(syncScrollWidth,100);
+
+// ── BIG 3 MODAL ────────────────────────────────────────
+const BIG3_IMAGE_URL = 'https://drive.google.com/thumbnail?id=1MYyflpP3b0h7wA5-WbEyiS_vje7emgPB&sz=w1200';
+
+function openBig3Modal(e) {
+  e.preventDefault();
+  const modal = document.getElementById('big3Modal');
+  const img   = document.getElementById('big3Image');
+  if (BIG3_IMAGE_URL) {
+    img.src = BIG3_IMAGE_URL;
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+  }
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBig3Modal() {
+  document.getElementById('big3Modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeBig3Modal();
+});
+
+// ── WATTAGE CALCULATOR ─────────────────────────────────
+function toggleCalc(e) {
+  e.preventDefault();
+  const calc = document.getElementById('wattCalc');
+  const link = document.getElementById('calcToggleLink');
+  const isOpen = calc.style.display !== 'none';
+  calc.style.display = isOpen ? 'none' : 'block';
+  link.innerHTML = isOpen
+    ? '⚡ Help Me Find the Right Battery'
+    : '✕ Close Battery Finder';
+  link.style.background = isOpen ? 'var(--accent-light)' : '#fee2e2';
+  link.style.color = isOpen ? 'var(--accent)' : 'var(--red)';
+  link.style.borderColor = isOpen ? '#bfdbfe' : '#fecaca';
+  // Show/hide arrows
+  document.querySelectorAll('.calc-arrow').forEach(el => {
+    el.style.visibility = isOpen ? 'visible' : 'hidden';
+  });
+  // Clear everything when closing
+  if (isOpen) {
+    document.getElementById('calcResults').style.display = 'none';
+    document.getElementById('calcClearBtn').style.display = 'none';
+      document.getElementById('calcWatts').value = '';
+    document.getElementById('calcHVCheck').checked = false;
+    document.getElementById('calcStep2Watts').style.display = 'none';
+    document.getElementById('calcStep3HV').style.display = 'none';
+    document.getElementById('calcRunWrap').style.display = 'none';
+  }
+}
+let calcAppMode = 'Car Audio';
+
+// App toggle
+document.getElementById('calcAppCar').addEventListener('click',   () => setCalcApp('Car Audio'));
+document.getElementById('calcAppPower').addEventListener('click', () => setCalcApp('Powersports'));
+
+// Wattage input — show HV checkbox (Car Audio) or Calculate (Powersport) once watts entered
+document.getElementById('calcWatts').addEventListener('input', () => {
+  const watts = parseFloat(document.getElementById('calcWatts').value);
+  if (watts > 0) {
+    if (calcAppMode === 'Car Audio') {
+      document.getElementById('calcStep3HV').style.display = 'flex';
+      document.getElementById('calcRunWrap').style.display = 'flex';
+    } else {
+      document.getElementById('calcStep3HV').style.display = 'none';
+      document.getElementById('calcRunWrap').style.display = 'flex';
+    }
+  } else {
+    document.getElementById('calcStep3HV').style.display = 'none';
+    document.getElementById('calcRunWrap').style.display = 'none';
+    document.getElementById('calcResults').style.display = 'none';
+  }
+});
+
+// HV checkbox — auto-populate alternator voltage and re-run if already calculated
+document.getElementById('calcHVCheck').addEventListener('change', () => {
+  const isChecked = document.getElementById('calcHVCheck').checked;
+  const voltInput = document.getElementById('calcAltVoltInput');
+  if (isChecked) {
+    voltInput.value = 16;
+  } else {
+    voltInput.value = '';
+  }
+  updateAltOutput();
+  if (document.getElementById('calcResults').style.display !== 'none') runCalc();
+});
+
+document.getElementById('calcRunBtn').addEventListener('click', runCalc);
+document.getElementById('calcClearBtn').addEventListener('click', () => {
+  document.getElementById('calcResults').style.display = 'none';
+  document.getElementById('calcClearBtn').style.display = 'none';
+  document.getElementById('calcWatts').value = '';
+  document.getElementById('calcHVCheck').checked = false;
+  document.getElementById('calcAltSize').value = '';
+  document.getElementById('calcAltVoltInput').value = '';
+  document.getElementById('calcAltOutputWrap').style.display = 'none';
+  // Hide steps that appear progressively
+  document.getElementById('calcStep2Watts').style.display = 'none';
+  document.getElementById('calcStep3HV').style.display = 'none';
+  document.getElementById('calcRunWrap').style.display = 'none';
+});
+document.getElementById('calcWatts').addEventListener('keydown', e => { if (e.key === 'Enter') runCalc(); });
+
+function setCalcApp(mode) {
+  calcAppMode = mode;
+  // Toggle button styles
+  document.getElementById('calcAppCar').style.background   = mode === 'Car Audio'   ? 'var(--accent)' : 'var(--bg)';
+  document.getElementById('calcAppCar').style.color        = mode === 'Car Audio'   ? '#fff' : 'var(--text-muted)';
+  document.getElementById('calcAppPower').style.background = mode === 'Powersports' ? 'var(--accent)' : 'var(--bg)';
+  document.getElementById('calcAppPower').style.color      = mode === 'Powersports' ? '#fff' : 'var(--text-muted)';
+
+  // Reset all subsequent steps
+  document.getElementById('calcWatts').value = '';
+  document.getElementById('calcHVCheck').checked = false;
+  document.getElementById('calcResults').style.display = 'none';
+  document.getElementById('calcRunWrap').style.display = 'none';
+  document.getElementById('calcStep3HV').style.display = 'none';
+
+  if (mode === 'Car Audio') {
+    document.getElementById('calcStep2Watts').style.display = 'flex';
+    document.getElementById('calcWattsStepLabel').textContent = 'Step 2 — Total RMS Wattage';
+  } else {
+    document.getElementById('calcStep2Watts').style.display = 'flex';
+    document.getElementById('calcWattsStepLabel').textContent = 'Step 2 — Total RMS Wattage';
+  }
+}
+
+function getAltVolt() {
+  return parseFloat(document.getElementById('calcAltVoltInput').value) || 0;
+}
+
+function updateAltOutput() {
+  const amps = parseFloat(document.getElementById('calcAltSize').value) || 0;
+  const volts = getAltVolt();
+  const wrap = document.getElementById('calcAltOutputWrap');
+  const out = document.getElementById('calcAltOutput');
+  if (amps > 0 && volts > 0) {
+    const watts = amps * volts;
+    out.textContent = `${amps.toLocaleString()}A × ${volts}V = ${watts.toLocaleString()}W`;
+    wrap.style.display = 'flex';
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+document.getElementById('calcAltSize').addEventListener('input', updateAltOutput);
+document.getElementById('calcAltVoltInput').addEventListener('input', updateAltOutput);
+
+function parseRMS(str) {
+  if (!str || str === 'N/A' || str === '—') return null;
+  const nums = str.replace(/,/g,'').match(/[\d.]+/g);
+  if (!nums) return null;
+  return parseFloat(nums[nums.length - 1]);
+}
+
+function getBatteryRMS(row, hvMode) {
+  if (hvMode) {
+    if (row['High Voltage (16V) Capable'] !== 'Yes') return null;
+    return parseRMS(row['RMS Wattage @ 16V']);
+  }
+  return parseRMS(row['RMS Wattage (std. voltage)']);
+}
+
+function runCalc() {
+  const totalRMS   = parseFloat(document.getElementById('calcWatts').value);
+  const resultsEl  = document.getElementById('calcResults');
+  const cardsEl    = document.getElementById('calcCards');
+  const noResultEl = document.getElementById('calcNoResult');
+  const summaryEl  = document.getElementById('calcSummaryLabel');
+  const neededEl   = document.getElementById('calcBatteryNeededLabel');
+
+  if (!totalRMS || totalRMS <= 0) { resultsEl.style.display = 'none'; return; }
+
+  const isCarAudio   = calcAppMode === 'Car Audio';
+  const isHV         = isCarAudio && document.getElementById('calcHVCheck').checked;
+  const altSize      = 0;
+  const remainingRMS = totalRMS;
+
+  resultsEl.style.display = 'block';
+  document.getElementById('calcClearBtn').style.display = 'inline-block';
+  // Show alternator fields for Car Audio only — currently hidden
+  // document.getElementById('calcAltSection').style.display = isCarAudio ? 'flex' : 'none';
+  cardsEl.innerHTML = '';
+  noResultEl.style.display = 'none';
+
+  // Build summary label
+  summaryEl.textContent = `Total RMS: ${totalRMS.toLocaleString()}W | ${isCarAudio ? 'Car Audio (Alternator)' : 'Powersport (Stator)'}${isHV ? ' — High Voltage (16V)' : ''}`;
+
+  // If alternator covers everything
+  if (remainingRMS === 0) {
+    neededEl.textContent = '✓ Your alternator covers your full system — no additional battery needed for wattage!';
+    neededEl.style.color = 'var(--green)';
+    return;
+  }
+
+  neededEl.textContent = '';
+
+  // Filter eligible batteries
+  const eligible = allData
+    .filter(r => r['Battery Application'] === calcAppMode)
+    .map(r => ({ row: r, rms: getBatteryRMS(r, isHV) }))
+    .filter(b => b.rms !== null);
+
+  if (eligible.length === 0) {
+    noResultEl.style.display = 'block';
+    noResultEl.textContent = isHV
+      ? 'No High Voltage (16V) capable batteries found for this application.'
+      : 'No batteries found for this application.';
+    return;
+  }
+
+  // Build results: for each battery find minimum qty to cover remainingRMS
+  // Use higher RMS for first battery when multiple needed (same as remainingRMS target)
+  const MAX_QTY = 10;
+  const allResults = [];
+
+  eligible.forEach(({ row, rms }) => {
+    const minQty = Math.ceil(remainingRMS / rms);
+    // Don't show No-Li 12Ah if more than 1 battery is needed
+    if (row['Full Part Number'] === 'NoLi-12AH' && minQty > 1) return;
+    for (let offset = 0; offset <= 2; offset++) {
+      const qty = minQty + offset;
+      if (qty > MAX_QTY) break;
+      if (offset > 0 && qty > 3) break;
+      const totalCovered = rms * qty;
+      const headroom = totalCovered - remainingRMS;
+      // Always include the minimum qty (offset === 0), even if headroom > 50%
+      // Only apply the 50% cap to headroom options (offset > 0)
+      if (offset > 0 && headroom / remainingRMS >= 0.5) break;
+      allResults.push({ row, rms, qty, totalCovered, headroom, isHeadroom: offset > 0 });
+    }
+  });
+
+  // Filter out higher-qty options that cost more than a lower-qty option of the SAME battery
+  // (Don't cross-compare different batteries — a 2× cheaper battery shouldn't hide a 1× expensive one)
+  const filteredResults = allResults.filter(r => {
+    if (!r.isHeadroom) return true; // always show minimum qty results
+    const thisMSRP = parseFloat(r.row['MSRP']) * r.qty;
+    const lowerQtySameBattery = allResults.filter(x =>
+      x.row['Full Part Number'] === r.row['Full Part Number'] && x.qty < r.qty
+    );
+    if (!lowerQtySameBattery.length) return true;
+    const minLowerMSRP = Math.min(...lowerQtySameBattery.map(x => parseFloat(x.row['MSRP']) * x.qty));
+    return thisMSRP <= minLowerMSRP;
+  });
+
+  filteredResults.sort((a, b) => a.headroom - b.headroom);
+
+  if (filteredResults.length === 0) {
+    noResultEl.style.display = 'block';
+    return;
+  }
+
+  const tierLabels = ['Minimum', 'Better', 'Best', "Why Not It's Only Money 😏"];
+  const tierColors = ['#16a34a', '#2563eb', '#7c3aed', '#dc2626'];
+
+  // Assign tiers based on position in the already-sorted filteredResults (min results only)
+  const tierMap = new Map();
+  let tierCounter = 0;
+  filteredResults.filter(r => !r.isHeadroom).forEach(r => {
+    const headroomPct = remainingRMS > 0 ? (r.headroom / remainingRMS) * 100 : 0;
+    const tierIndex = headroomPct > 100 ? 3 : tierCounter++;
+    tierMap.set(r.row['Full Part Number'] + '_' + r.qty, tierIndex);
+  });
+
+  const qtys = [...new Set(filteredResults.map(r => r.qty))];
+  // Render cards directly in headroom-sorted order (not grouped by qty)
+  filteredResults.forEach(({ row, rms, qty: q, totalCovered, headroom, isHeadroom }) => {
+      const card = document.createElement('div');
+      card.style.cssText = `
+        background: ${!isHeadroom ? 'var(--accent-light)' : 'var(--surface-alt)'};
+        border: 1.5px solid ${!isHeadroom ? '#bfdbfe' : 'var(--border)'};
+        border-radius: 10px; padding: 12px 16px; min-width: 220px; max-width: 280px;
+        display: flex; flex-direction: column; gap: 6px; position: relative;
+      `;
+
+      if (!isHeadroom) {
+        const tierIndex = tierMap.get(row['Full Part Number'] + '_' + q) ?? 0;
+        const tierLabel = tierLabels[Math.min(tierIndex, tierLabels.length - 1)];
+        const tierColor = tierColors[Math.min(tierIndex, tierColors.length - 1)];
+        const badge = document.createElement('div');
+        badge.style.cssText = `position:absolute; top:-1px; right:10px; background:${tierColor}; color:#fff; font-weight:800; font-family:var(--font-head); font-size:0.88em; padding:4px 14px; border-radius:0 0 8px 8px; white-space:nowrap; letter-spacing:0.03em;`;
+        badge.textContent = tierLabel;
+        card.appendChild(badge);
+      }
+
+      const name = document.createElement('div');
+      name.style.cssText = 'font-family:var(--font-head); font-size:1.05em; font-weight:900; color:var(--text); margin-top:18px;';
+      const url = row['Product URL'];
+      name.innerHTML = url
+        ? `<a href="${url}" target="_blank" style="color:var(--accent); text-decoration:underline;">${q > 1 ? q + '× ' : ''}${row['Battery Name']}</a>`
+        : (q > 1 ? q + '× ' : '') + row['Battery Name'];
+      card.appendChild(name);
+
+      const partNum = document.createElement('div');
+      partNum.style.cssText = 'font-size:0.78em; color:var(--text-muted); font-weight:600;';
+      partNum.textContent = row['Full Part Number'] + (q > 1 ? ` × ${q}` : '');
+      card.appendChild(partNum);
+
+      const underhood = document.createElement('div');
+      const safe = row['Underhood Safe'] === 'Yes';
+      underhood.style.cssText = `font-size:0.82em; font-weight:800; color:${safe ? 'var(--green)' : 'var(--red)'};`;
+      underhood.textContent = safe ? '✓ Underhood Safe' : '✕ NOT Underhood Safe';
+      card.appendChild(underhood);
+
+      // Show wattage breakdown for multi-battery car audio
+      const statRows = [];
+      if (isCarAudio && q > 1) {
+        const firstBatteryLoad = Math.min(rms, remainingRMS);
+        const restLoad = remainingRMS - firstBatteryLoad;
+      }
+      statRows.push(['Total RMS covered', totalCovered.toLocaleString() + 'W']);
+      const headroomLabel = isCarAudio && altSize > 0 ? `Headroom with ${altSize}A alternator` : 'Headroom';
+      statRows.push([headroomLabel, '+' + Math.round(headroom).toLocaleString() + 'W (' + Math.round((headroom / remainingRMS) * 100) + '%)']);
+      statRows.push(['MSRP' + (q > 1 ? ` (×${q})` : ''), '$' + (parseFloat(row['MSRP']) * q).toLocaleString('en-US')]);
+
+      statRows.forEach(([label, val]) => {
+        const row2 = document.createElement('div');
+        row2.style.cssText = 'display:flex; justify-content:space-between; font-size:0.82em; gap:12px; white-space:nowrap;';
+        row2.innerHTML = `<span style="color:var(--text-muted);">${label}</span><span style="font-weight:700; color:var(--text);">${val}</span>`;
+        card.appendChild(row2);
+      });
+
+      // Divider
+      const divider = document.createElement('div');
+      divider.style.cssText = 'border-top:1px solid var(--border); margin:4px 0;';
+      card.appendChild(divider);
+
+      // Additional Recommendation header
+      const addlHeader = document.createElement('div');
+      addlHeader.style.cssText = 'font-family:var(--font-head); font-size:0.78em; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:2px;';
+      addlHeader.textContent = 'Additional Recommendations';
+      card.appendChild(addlHeader);
+
+      // Recommended Alternator Size
+      const altRec = document.createElement('div');
+      altRec.style.cssText = 'display:flex; justify-content:space-between; font-size:0.82em; gap:12px; white-space:nowrap;';
+      const ampsPerKw = isHV ? 62.5 : 70;
+      const recAltAmps = Math.ceil((totalRMS / 1000) * ampsPerKw);
+      altRec.innerHTML = `<span style="color:var(--text-muted);">Total Rec. Alternator(s) Output</span><span style="font-weight:700; color:var(--text);">${recAltAmps}A</span>`;
+      card.appendChild(altRec);
+
+      // Big 3 Upgrade
+      const big3 = document.createElement('div');
+      big3.style.cssText = 'display:flex; justify-content:space-between; font-size:0.82em; gap:12px; white-space:nowrap;';
+      big3.innerHTML = `<span style="color:var(--text-muted);">Big 3 Upgrade</span><span style="font-weight:700;"><a href="#" onclick="openBig3Modal(event)" style="color:var(--accent);">See Example</a></span>`;
+      card.appendChild(big3);
+
+      // Warranty reminder
+      const warrantyReminder = document.createElement('div');
+      warrantyReminder.style.cssText = 'font-size:0.78em; color:var(--text-muted); margin-top:4px; line-height:1.4; white-space:normal;';
+      warrantyReminder.innerHTML = `Don't forget to <a href="https://limitlesslithium.com/battery-registration/" target="_blank" style="color:var(--accent); font-weight:700;">Register Your Battery</a> to get an extra 2 years of Warranty.`;
+      card.appendChild(warrantyReminder);
+
+      cardsEl.appendChild(card);
+  });
+}
+</script>
+</body>
+</html>

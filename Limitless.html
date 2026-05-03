@@ -45,7 +45,6 @@
 
     .container { width: 100%; max-width: 2200px; }
 
-    /* ── HEADER ── */
     .header {
       display: flex;
       align-items: center;
@@ -54,11 +53,7 @@
       margin-bottom: 14px;
       padding: 12px 0 10px;
     }
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .header-logo { display: flex; align-items: center; gap: 10px; }
     .bolt-icon {
       width: 36px; height: 36px;
       background: var(--accent);
@@ -79,7 +74,6 @@
     }
     h1 span { color: var(--accent); }
 
-    /* ── FILTERS ── */
     .filters {
       background: var(--surface);
       border-radius: 12px;
@@ -141,7 +135,6 @@
     .btn-orange { background: var(--accent); color: #fff; }
     .btn-orange:hover { background: var(--accent-dark); box-shadow: 0 2px 10px rgba(0,87,255,0.25); }
 
-    /* count bar */
     .count-bar {
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 8px;
@@ -150,7 +143,6 @@
     }
     .count-bar strong { color: var(--text); }
 
-    /* ── TABLE ── */
     .scroll-hint { display: none; font-size: 0.75em; color: var(--text-light); text-align: center; margin-bottom: 6px; }
     .top-scroll { width: 100%; overflow-x: auto; overflow-y: hidden; height: 10px; background: var(--surface); border-radius: 10px 10px 0 0; }
     .top-scroll-inner { height: 1px; }
@@ -175,7 +167,7 @@
       cursor: pointer;
       position: sticky; top: 0; z-index: 2;
       user-select: none;
-      }
+    }
     th:hover { background: var(--surface); }
     th.sorted { color: #93c5fd; }
     td { color: var(--text); background: var(--surface); }
@@ -205,18 +197,15 @@
       accent-color: var(--accent);
     }
 
-    /* badges */
     .badge-yes { background: #dcfce7; color: #15803d; padding: 2px 9px; border-radius: 20px; font-size: 0.82em; font-weight: 600; }
     .badge-no { background: #fee2e2; color: #b91c1c; padding: 2px 9px; border-radius: 20px; font-size: 0.82em; font-weight: 600; }
     .badge-na { background: var(--bg); color: var(--text-light); padding: 2px 9px; border-radius: 20px; font-size: 0.82em; font-weight: 600; }
 
-    /* extra / hv cols */
     .extra-col { display: none; }
     .extra-visible .extra-col { display: table-cell; }
     .hv-col { display: none; }
     .hv-visible .hv-col { display: table-cell; }
 
-    /* ── COMPARE PANEL ── */
     .compare-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 10px 16px;
@@ -319,17 +308,9 @@
     input[type="number"] { color-scheme: light; }
     ::placeholder { color: var(--text-light); opacity: 1; }
 
-    .calc-arrow {
-      font-size: 1.8em;
-      font-weight: 900;
-      color: var(--accent);
-    }
-    .calc-arrow-left {
-      animation: nudge-left 1s ease-in-out infinite;
-    }
-    .calc-arrow-right {
-      animation: nudge-right 1s ease-in-out infinite;
-    }
+    .calc-arrow { font-size: 1.8em; font-weight: 900; color: var(--accent); }
+    .calc-arrow-left { animation: nudge-left 1s ease-in-out infinite; }
+    .calc-arrow-right { animation: nudge-right 1s ease-in-out infinite; }
     @keyframes nudge-left {
       0%, 100% { transform: translateX(0); opacity: 1; }
       50%       { transform: translateX(-6px); opacity: 0.5; }
@@ -343,7 +324,6 @@
 <body>
 <div class="container">
 
-  <!-- HEADER -->
   <div class="header">
     <div class="header-logo">
       <div class="bolt-icon">⚡</div>
@@ -351,7 +331,6 @@
     </div>
   </div>
 
-  <!-- FILTERS -->
   <div class="filters">
     <div class="filter-actions">
       <button class="btn btn-red" id="clearFilters">Clear All Filters</button>
@@ -359,7 +338,6 @@
         Not seeing what you need?<br/> Click <span style="color:var(--red); font-weight:800;">Clear All Filters</span> and start again.
       </span>
     </div>
-
     <div class="filter-group">
       <label>Battery Application</label>
       <select id="fApplication"><option value="">All</option></select>
@@ -382,12 +360,10 @@
     </div>
   </div>
 
-  <!-- HV NOTICE -->
   <div class="hv-notice" id="hvNotice">
     ⚡ High Voltage columns are now visible — showing 16V RMS, Burst Wattage, and Burst Amperage specs.
   </div>
 
-  <!-- COUNT BAR -->
   <div class="count-bar">
     <span id="count" style="font-size:0.84em;">Showing all entries</span>
     <span style="font-size:0.88em; color:var(--red); font-weight:900; font-family:var(--font-head); letter-spacing:0.04em;">▲▲▲ Use the Filters Above to Narrow the Results Below ▲▲▲</span>
@@ -397,7 +373,6 @@
     </div>
   </div>
 
-  <!-- COMPARE PANEL -->
   <div id="comparePanel" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); margin-bottom:10px; overflow:hidden;">
     <div class="compare-header" style="flex-direction:column; align-items:flex-start;">
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%;">
@@ -431,15 +406,12 @@
           <th data-sort="Cold Cranking Amps (CCA)">CCA</th>
           <th data-sort="RMS Wattage (std. voltage)">RMS Watts (14.4V)</th>
           <th data-sort="Max Burst Wattage (std.)">Burst Watts (14.4V)</th>
-          <!-- HV columns -->
           <th data-sort="RMS Wattage @ 16V" class="hv-col">RMS Watts @ 16V</th>
           <th data-sort="Max Burst Wattage @ 16V" class="hv-col">Burst Watts @ 16V</th>
           <th data-sort="Burst Amperage @ 16V" class="hv-col">Burst Amps @ 16V</th>
-          <!-- Main always-on -->
           <th data-sort="RMS Amperage Stand-Alone (30s)">RMS Amps (30s)</th>
           <th data-sort="Burst Amperage Stand-Alone (10s)">Burst Amps (10s)</th>
           <th data-sort="BMS Installed">BMS</th>
-          <!-- Extra cols -->
           <th data-sort="Vehicle Charging System" class="extra-col">Charging System</th>
           <th data-sort="Resting Voltage" class="extra-col">Resting Voltage</th>
           <th data-sort="Float Voltage" class="extra-col">Float Voltage</th>
@@ -464,7 +436,6 @@
   </div>
   <div class="no-results" id="noResults" style="display:none;">No matching batteries found.</div>
 
-  <!-- WATTAGE CALCULATOR TRIGGER -->
   <div style="margin-top:14px; margin-bottom:6px; text-align:center; display:flex; align-items:center; justify-content:center; gap:12px;">
     <span class="calc-arrow calc-arrow-left">&#9658;&#9658;&#9658;</span>
     <a id="calcToggleLink" href="#" onclick="toggleCalc(event)"
@@ -474,7 +445,6 @@
     <span class="calc-arrow calc-arrow-right">&#9668;&#9668;&#9668;</span>
   </div>
 
-  <!-- WATTAGE CALCULATOR -->
   <div id="wattCalc" style="display:none; background:var(--surface); border-radius:12px; box-shadow:var(--shadow); padding:16px 20px; margin-top:8px; margin-bottom:10px; border-left:4px solid var(--accent);">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
       <div class="bolt-icon" style="width:28px;height:28px;font-size:1rem;">&#x26A1;</div>
@@ -482,10 +452,8 @@
       <span style="font-size:0.8em; color:var(--text-muted);">Answer each step to find out which batteries and how many you need.</span>
     </div>
 
-    <!-- STEPS: laid out horizontally -->
     <div style="display:flex; align-items:flex-end; gap:24px; flex-wrap:wrap; margin-bottom:16px;">
 
-      <!-- STEP 1: Application -->
       <div id="calcStep1" style="display:flex; flex-direction:column; gap:6px;">
         <label style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Step 1 &mdash; Application</label>
         <div style="display:flex; border:1px solid var(--border-strong); border-radius:7px; overflow:hidden;">
@@ -500,14 +468,12 @@
         </div>
       </div>
 
-      <!-- STEP 2 (Car Audio) or STEP 2 (Powersport): Total RMS Wattage -->
       <div id="calcStep2Watts" style="display:flex; flex-direction:column; gap:6px;">
         <label id="calcWattsStepLabel" style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Step 2 &mdash; Total RMS Wattage</label>
         <input type="number" id="calcWatts" min="1" placeholder="System's Total RMS Wattage"
           style="padding:8px 12px; border:1px solid var(--border-strong); border-radius:7px; font-size:1em; font-family:var(--font); width:260px; color:var(--text); background:var(--surface);" />
       </div>
 
-      <!-- STEP 4 (Car Audio only): 16V checkbox -->
       <div id="calcStep3HV" style="display:none; flex-direction:column; gap:6px;">
         <label style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Step 3 &mdash; Voltage System</label>
         <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.92em; font-weight:600; color:var(--text); padding:8px 0;">
@@ -516,7 +482,6 @@
         </label>
       </div>
 
-      <!-- Calculate Button -->
       <div id="calcRunWrap" style="display:none; gap:8px; align-items:center;">
         <button id="calcRunBtn" class="btn btn-orange">Calculate</button>
         <button id="calcClearBtn" class="btn btn-red" style="display:none;">Clear Results</button>
@@ -524,14 +489,12 @@
 
     </div>
 
-    <!-- Results -->
     <div id="calcResults" style="display:none;">
       <div style="border-top:1px solid var(--border); padding-top:14px;">
         <div style="display:none;">
           <span id="calcSummaryLabel" style="color:var(--accent);"></span>
         </div>
 
-        <!-- Alternator Size + Voltage (Car Audio only) -->
         <div id="calcAltSection" style="display:none; align-items:flex-end; gap:20px; flex-wrap:wrap; margin-bottom:16px; padding:14px 16px; background:var(--surface-alt); border:1px solid var(--border); border-radius:8px;">
           <div style="display:flex; flex-direction:column; gap:5px;">
             <label style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Alternator Size (Amps)</label>
@@ -543,8 +506,6 @@
             <input type="number" id="calcAltVoltInput" min="1" placeholder="e.g. 14.4"
               style="padding:8px 12px; border:1px solid var(--border-strong); border-radius:7px; font-size:1em; font-family:var(--font); width:180px; color:var(--text); background:var(--surface);" />
           </div>
-
-          <!-- Alternator Output Result -->
           <div id="calcAltOutputWrap" style="display:none; flex-direction:column; gap:5px;">
             <label style="font-family:var(--font-head); font-size:0.75em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Alternator Output (Watts)</label>
             <div id="calcAltOutput" style="padding:8px 16px; background:var(--accent-light); border:1px solid #bfdbfe; border-radius:7px; font-family:var(--font-head); font-size:1.1em; font-weight:900; color:var(--accent); white-space:nowrap;"></div>
@@ -844,6 +805,18 @@ const rawData = [
   }
 ];
 
+// ── ALTERNATOR RECOMMENDATION LOOKUP ──────────────────
+// Based on total system RMS wattage (not per-battery covered wattage)
+function getAltRecommendation(totalRMS) {
+  if (totalRMS <= 5000) {
+    return { label: 'Stock Alt. (125 Amp)', isPhone: false };
+  } else if (totalRMS <= 10000) {
+    return { label: '250–300 Amp Alt.', isPhone: false };
+  } else {
+    return { label: 'Call Limitless<br>706-400-0797', isPhone: false };
+  }
+}
+
 // ── STATE ──────────────────────────────────────────────
 let allData = rawData;
 let filteredData = [];
@@ -872,9 +845,9 @@ populateDropdowns();
 
 // ── FILTER & RENDER ────────────────────────────────────
 function applyFilters() {
-  const fApp = document.getElementById('fApplication').value;
-  const fHV  = document.getElementById('fHighVoltage').value;
-  const fUH  = document.getElementById('fUnderhood').value;
+  const fApp  = document.getElementById('fApplication').value;
+  const fHV   = document.getElementById('fHighVoltage').value;
+  const fUH   = document.getElementById('fUnderhood').value;
   const fChem = document.getElementById('fChemistry').value;
   const fSer  = document.getElementById('fSeries').value;
 
@@ -887,7 +860,6 @@ function applyFilters() {
     return true;
   });
 
-  // Show/hide HV columns only when filter is explicitly set to Yes
   const hvForced = fHV === 'Yes';
   setHVColumns(hvForced);
 
@@ -963,13 +935,11 @@ function renderTable() {
     const part = row['Full Part Number'];
     if (selectedParts.has(part)) tr.classList.add('selected');
 
-    // checkbox
     const tdCb = document.createElement('td');
     const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = selectedParts.has(part);
     cb.addEventListener('change', () => toggleCompare(part, cb.checked, tr));
     tdCb.appendChild(cb); tr.appendChild(tdCb);
 
-    // Battery Name
     const tdName = document.createElement('td');
     const url = row['Product URL'];
     if (url) {
@@ -993,7 +963,6 @@ function renderTable() {
       tr.appendChild(td);
     });
 
-    // Spec Sheet
     const tdSpec = document.createElement('td');
     const su = row['Spec Sheet URL'];
     if (su) {
@@ -1142,7 +1111,6 @@ function renderCompareTable() {
   });
   html += '</tr></thead><tbody>';
   COMPARE_FIELDS.forEach(([label, key]) => {
-    // Insert Spec Sheet row just before MSRP
     if (key === 'MSRP') {
       html += '<tr><th>Spec Sheet</th>';
       rows.forEach(r => {
@@ -1216,12 +1184,10 @@ document.getElementById('clearFilters').addEventListener('click',()=>{
   applyFilters();
 });
 
-// ── FILTER LISTENERS ───────────────────────────────────
 ['fApplication','fHighVoltage','fUnderhood','fChemistry','fSeries'].forEach(id=>
   document.getElementById(id).addEventListener('change',applyFilters)
 );
 
-// ── EXTRA FEATURES TOGGLE ──────────────────────────────
 document.getElementById('extraToggle').addEventListener('click',()=>{
   const table = document.getElementById('resultsTable');
   const showing = table.classList.toggle('extra-visible');
@@ -1242,7 +1208,6 @@ topScroll.addEventListener('scroll',()=>tableWrap.scrollLeft=topScroll.scrollLef
 tableWrap.addEventListener('scroll',()=>topScroll.scrollLeft=tableWrap.scrollLeft);
 window.addEventListener('resize',syncScrollWidth);
 
-// ── INIT ───────────────────────────────────────────────
 applyFilters();
 setTimeout(syncScrollWidth,100);
 
@@ -1253,12 +1218,8 @@ function openBig3Modal(e) {
   e.preventDefault();
   const modal = document.getElementById('big3Modal');
   const img   = document.getElementById('big3Image');
-  if (BIG3_IMAGE_URL) {
-    img.src = BIG3_IMAGE_URL;
-    img.style.display = 'block';
-  } else {
-    img.style.display = 'none';
-  }
+  img.src = BIG3_IMAGE_URL;
+  img.style.display = 'block';
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
@@ -1268,9 +1229,7 @@ function closeBig3Modal() {
   document.body.style.overflow = '';
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeBig3Modal();
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBig3Modal(); });
 
 // ── WATTAGE CALCULATOR ─────────────────────────────────
 function toggleCalc(e) {
@@ -1279,34 +1238,27 @@ function toggleCalc(e) {
   const link = document.getElementById('calcToggleLink');
   const isOpen = calc.style.display !== 'none';
   calc.style.display = isOpen ? 'none' : 'block';
-  link.innerHTML = isOpen
-    ? '⚡ Help Me Find the Right Battery'
-    : '✕ Close Battery Finder';
+  link.innerHTML = isOpen ? '⚡ Help Me Find the Right Battery' : '✕ Close Battery Finder';
   link.style.background = isOpen ? 'var(--accent-light)' : '#fee2e2';
   link.style.color = isOpen ? 'var(--accent)' : 'var(--red)';
   link.style.borderColor = isOpen ? '#bfdbfe' : '#fecaca';
-  // Show/hide arrows
-  document.querySelectorAll('.calc-arrow').forEach(el => {
-    el.style.visibility = isOpen ? 'visible' : 'hidden';
-  });
-  // Clear everything when closing
+  document.querySelectorAll('.calc-arrow').forEach(el => { el.style.visibility = isOpen ? 'visible' : 'hidden'; });
   if (isOpen) {
     document.getElementById('calcResults').style.display = 'none';
     document.getElementById('calcClearBtn').style.display = 'none';
-      document.getElementById('calcWatts').value = '';
+    document.getElementById('calcWatts').value = '';
     document.getElementById('calcHVCheck').checked = false;
     document.getElementById('calcStep2Watts').style.display = 'none';
     document.getElementById('calcStep3HV').style.display = 'none';
     document.getElementById('calcRunWrap').style.display = 'none';
   }
 }
+
 let calcAppMode = 'Car Audio';
 
-// App toggle
 document.getElementById('calcAppCar').addEventListener('click',   () => setCalcApp('Car Audio'));
 document.getElementById('calcAppPower').addEventListener('click', () => setCalcApp('Powersports'));
 
-// Wattage input — show HV checkbox (Car Audio) or Calculate (Powersport) once watts entered
 document.getElementById('calcWatts').addEventListener('input', () => {
   const watts = parseFloat(document.getElementById('calcWatts').value);
   if (watts > 0) {
@@ -1324,15 +1276,9 @@ document.getElementById('calcWatts').addEventListener('input', () => {
   }
 });
 
-// HV checkbox — auto-populate alternator voltage and re-run if already calculated
 document.getElementById('calcHVCheck').addEventListener('change', () => {
   const isChecked = document.getElementById('calcHVCheck').checked;
-  const voltInput = document.getElementById('calcAltVoltInput');
-  if (isChecked) {
-    voltInput.value = 16;
-  } else {
-    voltInput.value = '';
-  }
+  document.getElementById('calcAltVoltInput').value = isChecked ? 16 : '';
   updateAltOutput();
   if (document.getElementById('calcResults').style.display !== 'none') runCalc();
 });
@@ -1346,7 +1292,6 @@ document.getElementById('calcClearBtn').addEventListener('click', () => {
   document.getElementById('calcAltSize').value = '';
   document.getElementById('calcAltVoltInput').value = '';
   document.getElementById('calcAltOutputWrap').style.display = 'none';
-  // Hide steps that appear progressively
   document.getElementById('calcStep2Watts').style.display = 'none';
   document.getElementById('calcStep3HV').style.display = 'none';
   document.getElementById('calcRunWrap').style.display = 'none';
@@ -1355,26 +1300,17 @@ document.getElementById('calcWatts').addEventListener('keydown', e => { if (e.ke
 
 function setCalcApp(mode) {
   calcAppMode = mode;
-  // Toggle button styles
   document.getElementById('calcAppCar').style.background   = mode === 'Car Audio'   ? 'var(--accent)' : 'var(--bg)';
   document.getElementById('calcAppCar').style.color        = mode === 'Car Audio'   ? '#fff' : 'var(--text-muted)';
   document.getElementById('calcAppPower').style.background = mode === 'Powersports' ? 'var(--accent)' : 'var(--bg)';
   document.getElementById('calcAppPower').style.color      = mode === 'Powersports' ? '#fff' : 'var(--text-muted)';
-
-  // Reset all subsequent steps
   document.getElementById('calcWatts').value = '';
   document.getElementById('calcHVCheck').checked = false;
   document.getElementById('calcResults').style.display = 'none';
   document.getElementById('calcRunWrap').style.display = 'none';
   document.getElementById('calcStep3HV').style.display = 'none';
-
-  if (mode === 'Car Audio') {
-    document.getElementById('calcStep2Watts').style.display = 'flex';
-    document.getElementById('calcWattsStepLabel').textContent = 'Step 2 — Total RMS Wattage';
-  } else {
-    document.getElementById('calcStep2Watts').style.display = 'flex';
-    document.getElementById('calcWattsStepLabel').textContent = 'Step 2 — Total RMS Wattage';
-  }
+  document.getElementById('calcStep2Watts').style.display = 'flex';
+  document.getElementById('calcWattsStepLabel').textContent = 'Step 2 — Total RMS Wattage';
 }
 
 function getAltVolt() {
@@ -1387,8 +1323,7 @@ function updateAltOutput() {
   const wrap = document.getElementById('calcAltOutputWrap');
   const out = document.getElementById('calcAltOutput');
   if (amps > 0 && volts > 0) {
-    const watts = amps * volts;
-    out.textContent = `${amps.toLocaleString()}A × ${volts}V = ${watts.toLocaleString()}W`;
+    out.textContent = `${amps.toLocaleString()}A × ${volts}V = ${(amps * volts).toLocaleString()}W`;
     wrap.style.display = 'flex';
   } else {
     wrap.style.display = 'none';
@@ -1425,20 +1360,15 @@ function runCalc() {
 
   const isCarAudio   = calcAppMode === 'Car Audio';
   const isHV         = isCarAudio && document.getElementById('calcHVCheck').checked;
-  const altSize      = 0;
   const remainingRMS = totalRMS;
 
   resultsEl.style.display = 'block';
   document.getElementById('calcClearBtn').style.display = 'inline-block';
-  // Show alternator fields for Car Audio only — currently hidden
-  // document.getElementById('calcAltSection').style.display = isCarAudio ? 'flex' : 'none';
   cardsEl.innerHTML = '';
   noResultEl.style.display = 'none';
 
-  // Build summary label
   summaryEl.textContent = `Total RMS: ${totalRMS.toLocaleString()}W | ${isCarAudio ? 'Car Audio (Alternator)' : 'Powersport (Stator)'}${isHV ? ' — High Voltage (16V)' : ''}`;
 
-  // If alternator covers everything
   if (remainingRMS === 0) {
     neededEl.textContent = '✓ Your alternator covers your full system — no additional battery needed for wattage!';
     neededEl.style.color = 'var(--green)';
@@ -1447,7 +1377,6 @@ function runCalc() {
 
   neededEl.textContent = '';
 
-  // Filter eligible batteries
   const eligible = allData
     .filter(r => r['Battery Application'] === calcAppMode)
     .map(r => ({ row: r, rms: getBatteryRMS(r, isHV) }))
@@ -1461,14 +1390,11 @@ function runCalc() {
     return;
   }
 
-  // Build results: for each battery find minimum qty to cover remainingRMS
-  // Use higher RMS for first battery when multiple needed (same as remainingRMS target)
   const MAX_QTY = 10;
   const allResults = [];
 
   eligible.forEach(({ row, rms }) => {
     const minQty = Math.ceil(remainingRMS / rms);
-    // Don't show No-Li 12Ah if more than 1 battery is needed
     if (row['Full Part Number'] === 'NoLi-12AH' && minQty > 1) return;
     for (let offset = 0; offset <= 2; offset++) {
       const qty = minQty + offset;
@@ -1476,17 +1402,13 @@ function runCalc() {
       if (offset > 0 && qty > 3) break;
       const totalCovered = rms * qty;
       const headroom = totalCovered - remainingRMS;
-      // Always include the minimum qty (offset === 0), even if headroom > 50%
-      // Only apply the 50% cap to headroom options (offset > 0)
       if (offset > 0 && headroom / remainingRMS >= 0.5) break;
       allResults.push({ row, rms, qty, totalCovered, headroom, isHeadroom: offset > 0 });
     }
   });
 
-  // Filter out higher-qty options that cost more than a lower-qty option of the SAME battery
-  // (Don't cross-compare different batteries — a 2× cheaper battery shouldn't hide a 1× expensive one)
   const filteredResults = allResults.filter(r => {
-    if (!r.isHeadroom) return true; // always show minimum qty results
+    if (!r.isHeadroom) return true;
     const thisMSRP = parseFloat(r.row['MSRP']) * r.qty;
     const lowerQtySameBattery = allResults.filter(x =>
       x.row['Full Part Number'] === r.row['Full Part Number'] && x.qty < r.qty
@@ -1506,7 +1428,6 @@ function runCalc() {
   const tierLabels = ['Minimum', 'Better', 'Best', "Why Not It's Only Money 😏"];
   const tierColors = ['#16a34a', '#2563eb', '#7c3aed', '#dc2626'];
 
-  // Assign tiers based on position in the already-sorted filteredResults (min results only)
   const tierMap = new Map();
   let tierCounter = 0;
   filteredResults.filter(r => !r.isHeadroom).forEach(r => {
@@ -1515,96 +1436,97 @@ function runCalc() {
     tierMap.set(r.row['Full Part Number'] + '_' + r.qty, tierIndex);
   });
 
-  const qtys = [...new Set(filteredResults.map(r => r.qty))];
-  // Render cards directly in headroom-sorted order (not grouped by qty)
+  // Get alternator recommendation based on TOTAL system RMS (same for all cards)
+  const altRec = getAltRecommendation(totalRMS);
+
   filteredResults.forEach(({ row, rms, qty: q, totalCovered, headroom, isHeadroom }) => {
-      const card = document.createElement('div');
-      card.style.cssText = `
-        background: ${!isHeadroom ? 'var(--accent-light)' : 'var(--surface-alt)'};
-        border: 1.5px solid ${!isHeadroom ? '#bfdbfe' : 'var(--border)'};
-        border-radius: 10px; padding: 12px 16px; min-width: 220px; max-width: 280px;
-        display: flex; flex-direction: column; gap: 6px; position: relative;
-      `;
+    const card = document.createElement('div');
+    card.style.cssText = `
+      background: ${!isHeadroom ? 'var(--accent-light)' : 'var(--surface-alt)'};
+      border: 1.5px solid ${!isHeadroom ? '#bfdbfe' : 'var(--border)'};
+      border-radius: 10px; padding: 12px 16px; min-width: 220px; max-width: 300px;
+      display: flex; flex-direction: column; gap: 6px; position: relative;
+    `;
 
-      if (!isHeadroom) {
-        const tierIndex = tierMap.get(row['Full Part Number'] + '_' + q) ?? 0;
-        const tierLabel = tierLabels[Math.min(tierIndex, tierLabels.length - 1)];
-        const tierColor = tierColors[Math.min(tierIndex, tierColors.length - 1)];
-        const badge = document.createElement('div');
-        badge.style.cssText = `position:absolute; top:-1px; right:10px; background:${tierColor}; color:#fff; font-weight:800; font-family:var(--font-head); font-size:0.88em; padding:4px 14px; border-radius:0 0 8px 8px; white-space:nowrap; letter-spacing:0.03em;`;
-        badge.textContent = tierLabel;
-        card.appendChild(badge);
-      }
+    if (!isHeadroom) {
+      const tierIndex = tierMap.get(row['Full Part Number'] + '_' + q) ?? 0;
+      const tierLabel = tierLabels[Math.min(tierIndex, tierLabels.length - 1)];
+      const tierColor = tierColors[Math.min(tierIndex, tierColors.length - 1)];
+      const badge = document.createElement('div');
+      badge.style.cssText = `position:absolute; top:-1px; right:10px; background:${tierColor}; color:#fff; font-weight:800; font-family:var(--font-head); font-size:0.88em; padding:4px 14px; border-radius:0 0 8px 8px; white-space:nowrap; letter-spacing:0.03em;`;
+      badge.textContent = tierLabel;
+      card.appendChild(badge);
+    }
 
-      const name = document.createElement('div');
-      name.style.cssText = 'font-family:var(--font-head); font-size:1.05em; font-weight:900; color:var(--text); margin-top:18px;';
-      const url = row['Product URL'];
-      name.innerHTML = url
-        ? `<a href="${url}" target="_blank" style="color:var(--accent); text-decoration:underline;">${q > 1 ? q + '× ' : ''}${row['Battery Name']}</a>`
-        : (q > 1 ? q + '× ' : '') + row['Battery Name'];
-      card.appendChild(name);
+    const name = document.createElement('div');
+    name.style.cssText = 'font-family:var(--font-head); font-size:1.05em; font-weight:900; color:var(--text); margin-top:18px;';
+    const url = row['Product URL'];
+    name.innerHTML = url
+      ? `<a href="${url}" target="_blank" style="color:var(--accent); text-decoration:underline;">${q > 1 ? q + '× ' : ''}${row['Battery Name']}</a>`
+      : (q > 1 ? q + '× ' : '') + row['Battery Name'];
+    card.appendChild(name);
 
-      const partNum = document.createElement('div');
-      partNum.style.cssText = 'font-size:0.78em; color:var(--text-muted); font-weight:600;';
-      partNum.textContent = row['Full Part Number'] + (q > 1 ? ` × ${q}` : '');
-      card.appendChild(partNum);
+    const partNum = document.createElement('div');
+    partNum.style.cssText = 'font-size:0.78em; color:var(--text-muted); font-weight:600;';
+    partNum.textContent = row['Full Part Number'] + (q > 1 ? ` × ${q}` : '');
+    card.appendChild(partNum);
 
-      const underhood = document.createElement('div');
-      const safe = row['Underhood Safe'] === 'Yes';
-      underhood.style.cssText = `font-size:0.82em; font-weight:800; color:${safe ? 'var(--green)' : 'var(--red)'};`;
-      underhood.textContent = safe ? '✓ Underhood Safe' : '✕ NOT Underhood Safe';
-      card.appendChild(underhood);
+    const underhood = document.createElement('div');
+    const safe = row['Underhood Safe'] === 'Yes';
+    underhood.style.cssText = `font-size:0.82em; font-weight:800; color:${safe ? 'var(--green)' : 'var(--red)'};`;
+    underhood.textContent = safe ? '✓ Underhood Safe' : '✕ NOT Underhood Safe';
+    card.appendChild(underhood);
 
-      // Show wattage breakdown for multi-battery car audio
-      const statRows = [];
-      if (isCarAudio && q > 1) {
-        const firstBatteryLoad = Math.min(rms, remainingRMS);
-        const restLoad = remainingRMS - firstBatteryLoad;
-      }
-      statRows.push(['Total RMS covered', totalCovered.toLocaleString() + 'W']);
-      const headroomLabel = isCarAudio && altSize > 0 ? `Headroom with ${altSize}A alternator` : 'Headroom';
-      statRows.push([headroomLabel, '+' + Math.round(headroom).toLocaleString() + 'W (' + Math.round((headroom / remainingRMS) * 100) + '%)']);
-      statRows.push(['MSRP' + (q > 1 ? ` (×${q})` : ''), '$' + (parseFloat(row['MSRP']) * q).toLocaleString('en-US')]);
+    const statRows = [];
+    statRows.push(['Total RMS covered', totalCovered.toLocaleString() + 'W']);
+    statRows.push(['Headroom', '+' + Math.round(headroom).toLocaleString() + 'W (' + Math.round((headroom / remainingRMS) * 100) + '%)']);
+    statRows.push(['MSRP' + (q > 1 ? ` (×${q})` : ''), '$' + (parseFloat(row['MSRP']) * q).toLocaleString('en-US')]);
 
-      statRows.forEach(([label, val]) => {
-        const row2 = document.createElement('div');
-        row2.style.cssText = 'display:flex; justify-content:space-between; font-size:0.82em; gap:12px; white-space:nowrap;';
-        row2.innerHTML = `<span style="color:var(--text-muted);">${label}</span><span style="font-weight:700; color:var(--text);">${val}</span>`;
-        card.appendChild(row2);
-      });
+    statRows.forEach(([label, val]) => {
+      const row2 = document.createElement('div');
+      row2.style.cssText = 'display:flex; justify-content:space-between; font-size:0.82em; gap:12px; white-space:nowrap;';
+      row2.innerHTML = `<span style="color:var(--text-muted);">${label}</span><span style="font-weight:700; color:var(--text);">${val}</span>`;
+      card.appendChild(row2);
+    });
 
-      // Divider
-      const divider = document.createElement('div');
-      divider.style.cssText = 'border-top:1px solid var(--border); margin:4px 0;';
-      card.appendChild(divider);
+    // Divider
+    const divider = document.createElement('div');
+    divider.style.cssText = 'border-top:1px solid var(--border); margin:4px 0;';
+    card.appendChild(divider);
 
-      // Additional Recommendation header
-      const addlHeader = document.createElement('div');
-      addlHeader.style.cssText = 'font-family:var(--font-head); font-size:0.78em; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:2px;';
-      addlHeader.textContent = 'Additional Recommendations';
-      card.appendChild(addlHeader);
+    // Additional Recommendations header
+    const addlHeader = document.createElement('div');
+    addlHeader.style.cssText = 'font-family:var(--font-head); font-size:0.78em; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:2px;';
+    addlHeader.textContent = 'Additional Recommendations';
+    card.appendChild(addlHeader);
 
-      // Recommended Alternator Size
-      const altRec = document.createElement('div');
-      altRec.style.cssText = 'display:flex; justify-content:space-between; font-size:0.82em; gap:12px; white-space:nowrap;';
-      const ampsPerKw = isHV ? 62.5 : 70;
-      const recAltAmps = Math.ceil((totalRMS / 1000) * ampsPerKw);
-      altRec.innerHTML = `<span style="color:var(--text-muted);">Total Rec. Alternator(s) Output</span><span style="font-weight:700; color:var(--text);">${recAltAmps}A</span>`;
-      card.appendChild(altRec);
+    // ── RECOMMENDED ALT. SIZE + BIG 3 (Car Audio only) ──
+    if (isCarAudio) {
+      const altRow = document.createElement('div');
+      altRow.style.cssText = 'display:flex; justify-content:space-between; font-size:0.82em; gap:12px;';
+      const altLabel = document.createElement('span');
+      altLabel.style.cssText = 'color:var(--text-muted); white-space:nowrap;';
+      altLabel.textContent = 'Recommended Alt. Size';
+      const altVal = document.createElement('span');
+      altVal.style.cssText = 'font-weight:700; color:var(--text); text-align:right; white-space:normal; word-break:break-word; max-width:160px;';
+      altVal.innerHTML = altRec.label;
+      altRow.appendChild(altLabel);
+      altRow.appendChild(altVal);
+      card.appendChild(altRow);
 
-      // Big 3 Upgrade
       const big3 = document.createElement('div');
       big3.style.cssText = 'display:flex; justify-content:space-between; font-size:0.82em; gap:12px; white-space:nowrap;';
-      big3.innerHTML = `<span style="color:var(--text-muted);">Big 3 Upgrade</span><span style="font-weight:700;"><a href="#" onclick="openBig3Modal(event)" style="color:var(--accent);">See Example</a></span>`;
+      big3.innerHTML = '<span style="color:var(--text-muted);">Big 3 Upgrade</span><span style="font-weight:700;"><a href="#" onclick="openBig3Modal(event)" style="color:var(--accent);">See Example</a></span>';
       card.appendChild(big3);
+    }
 
-      // Warranty reminder
-      const warrantyReminder = document.createElement('div');
-      warrantyReminder.style.cssText = 'font-size:0.78em; color:var(--text-muted); margin-top:4px; line-height:1.4; white-space:normal;';
-      warrantyReminder.innerHTML = `Don't forget to <a href="https://limitlesslithium.com/battery-registration/" target="_blank" style="color:var(--accent); font-weight:700;">Register Your Battery</a> to get an extra 2 years of Warranty.`;
-      card.appendChild(warrantyReminder);
+    // Warranty reminder
+    const warrantyReminder = document.createElement('div');
+    warrantyReminder.style.cssText = 'font-size:0.78em; color:var(--text-muted); margin-top:4px; line-height:1.4; white-space:normal;';
+    warrantyReminder.innerHTML = `Don't forget to <a href="https://limitlesslithium.com/battery-registration/" target="_blank" style="color:var(--accent); font-weight:700;">Register Your Battery</a> to get an extra 2 years of Warranty.`;
+    card.appendChild(warrantyReminder);
 
-      cardsEl.appendChild(card);
+    cardsEl.appendChild(card);
   });
 }
 </script>
